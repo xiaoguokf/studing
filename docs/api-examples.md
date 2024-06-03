@@ -1,5 +1,5 @@
 ---
-outline: deep
+outline: {{'deep'}}
 ---
 
 # Runtime API Examples
@@ -29,7 +29,7 @@ const { theme, page, frontmatter } = useData()
 
 <script setup>
 import { useData } from 'vitepress'
-
+ console.log(import.meta.env)
 const { site, theme, page, frontmatter } = useData()
 </script>
 

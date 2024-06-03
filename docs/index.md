@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "XiaoGuo Studying"
+  name: "XiaoGuo Studing"
   text: "小果学习笔记"
   tagline: My great project tagline
   actions:
@@ -15,7 +15,11 @@ hero:
       link: /api-examples
 
 features:
-  - title: Vue3
-    details: vue3学习笔记
+  - title: Feature A
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Feature B
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Feature C
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 
