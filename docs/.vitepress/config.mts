@@ -30,6 +30,7 @@ export default defineConfig({
             buttonText: "搜索",
           },
           modal: {
+            noResultsText: "无法找到相关结果",
             footer: {
               navigateText: "切换",
               selectText: "选择",
