@@ -8,18 +8,16 @@ hero:
   tagline: My great project tagline
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: vue3
+      link: /vue3/index
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: c++
+      link: /
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: vue3
+    details: 在已有vue2的基础上进一步学习vue3
+  - title: c++
+    details: c++语法与实战
 ---
 
