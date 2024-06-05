@@ -5,6 +5,7 @@ import sidebar from "./router/sidebar";
 export default defineConfig({
   title: "XiaoGuo Studying",
   description: "小果学习笔记",
+  lang:"zh-CN",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav,
@@ -24,18 +25,36 @@ export default defineConfig({
     },
     returnToTopLabel: '返回顶部',
     search: {
-      provider: "local",
+
+      provider: "algolia",
       options: {
+        appId:"1XX8KDHP2P",
+        indexName:"studying-sshine",
+        apiKey:"95f4069c538b24653a209a2bef169a05",
+        placeholder:"搜索文档",
         translations: {
           button: {
             buttonText: "搜索",
+            buttonAriaLabel:"搜索文档"
           },
           modal: {
-            noResultsText: "无法找到相关结果",
+            startScreen:{
+              noRecentSearchesText:"没有最近的搜索",
+              recentSearchesTitle:"搜索历史",
+              saveRecentSearchButtonTitle:"保存到搜索历史",
+              removeRecentSearchButtonTitle:"从搜索历史中删除",
+              favoriteSearchesTitle:"收藏",
+              removeFavoriteSearchButtonTitle:"从收藏中删除"
+            },
+            noResultsScreen:{
+              noResultsText:"无法找到相关结果",
+              suggestedQueryText:"你可以尝试查询"
+            },
             footer: {
               navigateText: "切换",
               selectText: "选择",
               closeText: "关闭",
+              searchByText:"搜索供应商",
             },
           },
         },
