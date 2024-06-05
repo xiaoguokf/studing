@@ -6,6 +6,7 @@ export default defineConfig({
   title: "XiaoGuo Studying",
   description: "小果学习笔记",
   lang:"zh-CN",
+  srcDir:"src",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav,
