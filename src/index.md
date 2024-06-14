@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "XiaoGuo Studing"
+  name: "XiaoGuo Studying"
   text: "小果学习笔记"
   tagline: My great project tagline
   actions:

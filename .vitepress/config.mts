@@ -1,6 +1,8 @@
-import { defineConfig } from "vitepress";
+import {defineConfig, defineConfigWithTheme} from "vitepress";
 import nav from "./router/nav";
 import sidebar from "./router/sidebar";
+
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "XiaoGuo Studying",
@@ -11,6 +13,10 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav,
     sidebar: sidebar,
+    sidebarMenuLabel:'菜单',
+    darkModeSwitchLabel:"外观",
+    darkModeSwitchTitle:"暗夜模式",
+    lightModeSwitchTitle:"白日模式",
     socialLinks: [
       { icon: "github", link: "https://github.com/xiaoguokf/studing" },
     ],docFooter:{
@@ -25,6 +31,7 @@ export default defineConfig({
       label: "目录", // 右侧大纲标题文本配置
     },
     returnToTopLabel: '返回顶部',
+
     search: {
 
       provider: "algolia",
@@ -39,6 +46,12 @@ export default defineConfig({
             buttonAriaLabel:"搜索文档"
           },
           modal: {
+            searchBox:{
+              resetButtonTitle: '清除查询条件',
+              resetButtonAriaLabel: '清除查询条件',
+              cancelButtonText: '取消',
+              cancelButtonAriaLabel: '取消'
+            },
             startScreen:{
               noRecentSearchesText:"没有最近的搜索",
               recentSearchesTitle:"搜索历史",
