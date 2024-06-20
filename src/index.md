@@ -8,14 +8,14 @@ hero:
   tagline: My great project tagline
   actions:
     - theme: brand
-      text: vue3
+      text: vue3迁移
       link: /vue3/index
     - theme: alt
       text: c++
       link: /
 
 features:
-  - title: vue3
+  - title: vue3迁移
     details: 在已有vue2的基础上进一步学习vue3
   - title: c++
     details: c++语法与实战
