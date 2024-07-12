@@ -11,13 +11,13 @@ hero:
       text: vue3迁移
       link: /vue3/index
     - theme: alt
-      text: c++
-      link: /
+      text: groovy
+      link: /groovy/index
 
 features:
   - title: vue3迁移
     details: 在已有vue2的基础上进一步学习vue3
-  - title: c++
-    details: c++语法与实战
+  - title: groovy
+    details: 平滑使用java基础
 ---
 
