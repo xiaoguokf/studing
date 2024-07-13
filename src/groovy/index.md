@@ -173,7 +173,7 @@ groovy4需要jdk8，groovy5需要jdk11
 
 ![image-20240713232223748](assets/image-20240713232223748-17208841471631.png)
 
-::: info
+::: tip 提示
 
 如果不指定系统中的groovy，则会在lib下下载groovy包
 
