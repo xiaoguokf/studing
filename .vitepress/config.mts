@@ -1,8 +1,13 @@
-import {defineConfig, defineConfigWithTheme} from "vitepress";
-import nav from "./router/nav";
-import sidebar from "./router/sidebar";
+import {DefaultTheme, defineConfig, defineConfigWithTheme} from "vitepress";
+import route from "./router";
+import routes from "./router";
+let nav: DefaultTheme.NavItem[]=Object.values(route).map((route) => (route.nav))
+let sidebar: DefaultTheme.Sidebar = {
 
-
+}
+routes.forEach(route => {
+  sidebar[route.baseUrl]=route.sidebar;
+})
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "XiaoGuo Studying",
