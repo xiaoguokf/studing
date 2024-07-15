@@ -170,7 +170,196 @@ println in
 
 ## 简单数据类型
 
+### 字符串
 
+groovy中有两种字符串：`java.lang.String` 和 `groovy.lang.GString` Gstring又称插值字符串（和js中的模板字符串差不多）。
+
+::: tip 提示
+
+groovy中可以使用`\`来实现转义这个与java相同，例如 `\\` `\n` `\s`等转义
+
+:::
+
+#### 简单类型字符串
+
+- 单引号字符串（String）
+
+​	单引号字符串被认为是简单的String，所以不具有插值效果。
+
+- 双引号字符串 (GString)
+
+​	双引号字符串且具有插值$时，字符串是GString由groovy实现，是具有插值效果的字符串
+
+#### 字符串插值
+
+可以使用 `$变量` 和`${计算表达式}`来实现插值
+
+```groovy
+def key=[abc:2]
+println "${1+1}"
+println "$key.abc"
+```
+
+#### GString和String在字符串中的实现
+
+字符串在双引号标注并且具有插值的会被实现为GString，在进行字符串拼接运算仍然是`GString`，因为是在在运行时被确定。
+
+```groovy
+println '' instanceof String //true
+println "1234" instanceof String //true
+println "2${1}3${2}4${44}" instanceof String //false
+println '${1}' instanceof String //true
+println "${1}" instanceof GString //true
+println "${1}".toString() instanceof String //true
+println (("${1}"+"1234") instanceof String) //false
+println (("123"+"1234") instanceof String) //true
+```
+
+::: tip 提示
+
+groovy在做==比较时，是采用`ScriptBytecodeAdapter.compareEqual()`来比较的，所以说GString和String在内容上相等是可以相等的。采用equals不行
+
+```groovy
+println "${1}"=='1' //true
+println "${1}"=="1" //true
+println "${1}".equals('1') //false
+```
+
+:::
+
+
+
+#### 多行字符串
+
+我们可以使用三单（双）来声明多行字符串。当然三双引号是具有插槽功能的字符串.
+
+```groovy
+println """
+1
+${1+1}
+3
+"""
+println '''
+1
+${1+1}
+3
+'''
+```
+
+#### 闭包表达式
+
+前面中使用$来预设插值，但是我们想要在动态的变换字符串，通过修改变量来变成不同的字符串，我们可以使用闭包表达式`${->}`来表示字符串。其中`${w->}`中接受一个StringWriter对数据进行操作。
+
+```groovy
+def num=1;
+def str1="${num}"
+def str2="${->num}"
+def str3="${w->num}"
+def str4="${w->w<<num}" //等价于添加的意思，如下方语句
+def str5="${w->w.append(num.toString())}"
+println "1st---------"
+println str1 //1
+println str2 //1
+println str3 //空字符串
+println str4 //1
+println str5 //1
+num=2;
+println "2st---------"
+println str1 //1
+println str2 //1
+println str3 //空字符串
+println str4 //2
+println str5 //2
+```
+
+#### GString和String的hashcode
+
+GString中的hashcode与String中的hashcode不同，所以不能String和GString混用。GString中hashcode为String的hashcode+37
+
+```groovy
+def  num=1;
+def key="${->num}"
+def key2="${num}"
+def map = new HashMap<>()
+map.put(key,1)
+println map.get(key) //1
+println map.get("1") //null
+println map.get(key2) //1
+num=2;
+println map.get(key) //null
+num=1;
+println map.get(key) //1
+```
+
+
+
+::: details GString源代码
+
+```groovy
+package groovy.lang;
+
+public abstract class GString extends GroovyObjectSupport implements Comparable, CharSequence, Writable, Buildable, Serializable {
+
+    //省略内容...
+    @Override
+    public int hashCode() {
+        return 37 + toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) return true;
+        if (!(that instanceof GString)) return false;
+
+        return equals((GString) that);
+    }
+
+    public boolean equals(GString that) {
+        return toString().equals(that.toString());
+    }
+
+    @Override
+    public int compareTo(Object that) {
+        return toString().compareTo(that.toString());
+    }
+    //省略内容...
+}
+```
+
+:::
+
+#### 其他字符串
+
+##### 反斜线字符串
+
+通过使用两个`\\`来包裹的字符串，支持**多行文本**，**插值**，在定义正则字符串的时候使用很不错。`\/`用来转义/仅此而已
+
+```groovy
+def regList=[
+ /\s+/,/\/a/,/111
+123${3333}
+222/]
+regList.forEach(this::println)
+```
+
+##### 美元斜线字符串
+
+美元字符串是使用美元字符`$/.../$`来转义的字符串，支持**多行文本**，**插值**，
+
+```groovy
+def list=[
+        $/111/$,
+        $/${2}/$,
+        $/$$22/$,
+        $/$$2\\\///2/$,
+        $/
+123
+456
+789
+/$,
+]
+list.forEach(this::println)
+```
 
 
 
