@@ -166,7 +166,36 @@ println in
 | char               | byte     | short    | int      |
 | long               | float    | double   |          |
 
+### 引号标识符（字符串标识符）
 
+前面中提到，对于特殊关键字，我们可以使用字符串方式访问，对于所有的内容都是支持字符串方式访问的。
+
+::: code-group
+
+```groovy [Main.groovy]
+def user = new User("小明","001")
+def key="username"
+println user."username" //双引号访问
+println user.'userNo' //单引号字符串
+println user[key] //计算表达式访问
+println user."""username""" //多行文本字符串访问
+println user['username'] //计算表达式访问
+```
+
+```groovy [User.groovy]
+class User {
+    String username;
+    String userNo;
+    User(String username, String userNo) {
+        this.username = username
+        this.userNo = userNo
+    }
+}
+```
+
+
+
+:::
 
 ## 简单数据类型
 
