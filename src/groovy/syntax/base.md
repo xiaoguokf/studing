@@ -361,7 +361,30 @@ def list=[
 list.forEach(this::println)
 ```
 
+### 字符
 
+groovy中使用'a'会被识别为字符串，所以我们得使用 `as`关键字来显示的指定其类型。
+
+```groovy
+println ('a' instanceof String) //true
+println 'a' as char instanceof Character //true
+println  (((char)'a') instanceof Character) //true
+```
+
+### 数字
+
+groovy数字类型大致与java相同。
+
+#### 整数字面量
+
+groovy中有如下的整数字面量
+
+- `byte`
+- `char`
+- `short`
+- `int`
+- `long`
+- `java.math.BigInteger`
 
 ## 流程控制
 
