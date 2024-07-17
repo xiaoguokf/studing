@@ -386,5 +386,169 @@ groovy中有如下的整数字面量
 - `long`
 - `java.math.BigInteger`
 
+groovy与java中基元类型声明相同，但是groovy中利用强转实现；溢出会被强转。
+
+::: code-group
+
+```groovy [groovy]
+// 基元类型
+byte  b = 1000 //-24
+char  c = 2
+short s = 3
+int   i = 4
+long  l = 5
+//大整数
+BigInteger bi =  6
+```
+
+```java [java]
+byte  b = 1000; //编译不通过
+char  c = 2;
+short s = 3;
+int   i = 4;
+long  l = 5;
+BigInteger bi = BigInteger.valueOf(6);
+```
+
+
+```java [groovy转义后结果]
+byte b = (byte)1000;
+char c = (char)2;
+short s = (short)3;
+int i = true; //是true，难道被idea隐藏了？？？
+long l = (long)5;
+BigInteger bi = true.cast<invokedynamic>(6);
+```
+
+:::
+
+
+##### 非十进制表示
+
+非十进制数与java相同
+
+- 0b：2进制数
+- 0: 8进制数
+- 0x: 16进制数
+
+
+
+#### 浮点数字面量
+
+浮点数中与java相同的
+
+- `float`
+- `double`
+- `java.math.BigDecimal`
+
+```groovy
+// 基元类
+float  f = 1.234
+double d = 2.345
+
+// 大精度数
+BigDecimal bd =  3.456
+```
+
+groovy内部会将浮点数封装为`BigDecimal`，对于`double`和`float`会自动拆箱为具体的数值。
+
+#### def隐式转换
+
+使用def声明变量时，会被groovy推断成对应的类型。
+
+```groovy
+def i=1;
+println i instanceof Integer
+
+def l=2147483648; //Integer.MAX_VALUE+1
+println l instanceof Long
+
+def big=9223372036854775808; //Long.MAX_VALUE + 1
+println big instanceof BigInteger
+
+def dec=0.1; //BigDecimal
+def dec2=99999999999999999999999999999999.1; //BigDecimal
+```
+
+添加后缀会指定为对应类型
+
+| 类型       | 后缀       |
+| :--------- | :--------- |
+| BigInteger | `G` 或 `g` |
+| Long       | `L` 或 `l` |
+| Integer    | `I` 或 `i` |
+| BigDecimal | `G` 或 `g` |
+| Double     | `D` 或 `d` |
+| Float      | `F` 或 `f` |
+
+```groovy
+def i=1;  //int
+def l=1l; //long
+def g=1g; //BigInteger
+def dec=0.1; //BigDecimal
+def f=1f; //float
+def d=1d; //double
+def dec2=1.0g; //BigDecimal
+```
+
+
+
+#### 运算符中的隐式类型转换
+
+两个数操作，groovy会将结果进行隐式转换
+
+```groovy
+def a=1; //Integer
+def b=2.0; //BigDecimal
+def decimal = a * b //BigDecimal
+
+char c=1; //char
+char d=2; //char
+def res=c*d; //Integer
+```
+
+详细的表如下：
+
+|                | byte | char | short | int  | long | BigInteger | float  | double | BigDecimal |
+| :------------- | :--- | :--- | :---- | :--- | :--- | :--------- | :----- | :----- | :--------- |
+| **byte**       | int  | int  | int   | int  | long | BigInteger | double | double | BigDecimal |
+| **char**       |      | int  | int   | int  | long | BigInteger | double | double | BigDecimal |
+| **short**      |      |      | int   | int  | long | BigInteger | double | double | BigDecimal |
+| **int**        |      |      |       | int  | long | BigInteger | double | double | BigDecimal |
+| **long**       |      |      |       |      | long | BigInteger | double | double | BigDecimal |
+| **BigInteger** |      |      |       |      |      | BigInteger | double | double | BigDecimal |
+| **float**      |      |      |       |      |      |            | double | double | double     |
+| **double**     |      |      |       |      |      |            |        | double | double     |
+| **BigDecimal** |      |      |       |      |      |            |        |        | BigDecimal |
+
+
+
+对于除法`/`操作，默认会转为BigDecimal。如果有类型会再转回来。（def推断的按没有类型处理）
+
+
+
+对于幂操作`**`有如下结果
+
+- 如果指数是浮点数
+  - 如果结果可以表示为`Integer`，则返回`Integer`
+  - 否则，如果结果可以表示为`Long`，则返回`Long`
+  - 否则返回`Double`
+- 如果指数是正整数
+  - 如果基数是  `BigDecimal`，则返回`BigDecimal`结果值
+  - 如果基数是  `BigInteger`，则返回`BigInteger`结果值
+  - 如果基数是`Integer`，如果结果值适合它，则返回 `Integer`，否则一个`BigInteger`
+  - 如果基数为  `Long`，如果结果值适合它，则返回 `Long` ，否则返回 BigInteger`
+  - 如果基数为  `Double`或Float ，返回 `Double`
+
+- 如果指数是负整数
+  - 如果基数是1，返回对应类型。（float和double返回整数1）
+  - 返回double
+
+
+
+### 布尔值
+
+groovy有Truely
+
 ## 流程控制
 
