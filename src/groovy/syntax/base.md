@@ -577,7 +577,9 @@ def res=c*d; //Integer
 
 ### 布尔值
 
-groovy有Truely
+groovy中boolean与java相同，但是在判断是
+
+[Groovy中的Truth](../semantics/index#heading)
 
 ## 流程控制
 

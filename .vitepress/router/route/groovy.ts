@@ -18,12 +18,26 @@ export const groovy:Route={
             ]
         },
         {
-            text: "语法",
+            text: "语言特性",
             items: [
                 {
-                    text: "基础语法",
-                    link: "syntax/base"
-                }
+                    text: "语法",
+                    items: [
+                        {
+                            text: "基础语法",
+                            link: "syntax/base"
+                        }
+                    ]
+                },
+                {
+                    text: "语义",
+                    items: [
+                        {
+                            text: "基础语义",
+                            link: "semantics/index"
+                        }
+                    ]
+                },
             ]
         },
         {
