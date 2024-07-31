@@ -577,9 +577,101 @@ def res=c*d; //Integer
 
 ### 布尔值
 
-groovy中boolean与java相同，但是在判断是
+groovy中`boolean`与java相同，除了支持逻辑表达式之外，判断是使用`Truth`。可以点击到下方查看
 
 [Groovy中的Truth](../semantics/index#heading)
 
-## 流程控制
+```groovy
+def bool=true
+println (!null) instanceof Boolean
+println (true) instanceof Boolean
+```
 
+### 列表
+
+groovy使用`[]`默认表示`ArrayList`，特别指定时就会实例化为数组或其他列表。list支持括号运算和get运算
+
+```groovy
+def nums1 = [1, 2, 3] //List<Integer>
+def nums2 =[1,2,3] as LinkedList; ////LinkList<Integer>
+def nums3 =[1,2,3,'4'] //List<Object>def nums = [1, 2, 3] 
+assert nums1[0]==1
+assert nums1.get(1)==2
+```
+
+>[!TIP] 提示
+>
+>提示 如果存在多种类型，会被推断为他们公有的父类，直到`Object`
+>
+>由此可知，我们可以定义多维的列表。非同类型就是父类。
+>
+>```groovy
+>def nums=[[1,2,3],[4,5,6]] // ArrayList<List<Integer>>
+>def nums2=[[1,2,3],4] //ArrayList<Serializable>
+>println nums2.get(0).get(1) //尽管这样子可行，但是不太推荐，IDE也没给我推荐
+>println ((nums2.get(0) as List).get(0)) //我们如果确定第一个一定是List，就可以这样子算
+>```
+
+#### 左移（<<）运算符
+
+list支持使用`<<`运算符来替代`add`添加元素。可以统一化处理
+
+```groovy
+def nums=[1];
+nums<<1;
+nums<<'2'; //编译器警告了，类型推断错误，但是能运行
+println nums
+```
+
+#### 切片
+
+groovy可以像python那样进行切片。通过 [start..end] 来进行切片
+
+```groovy
+def nums=[1,2,3,4,5,5,6,6]
+print(nums[1..3])
+print(nums[1..-1]) //-1表示倒数第一个
+print(nums[-1..0]) //list的反序
+```
+
+#### 等号判断
+
+groovy中list的==判断会变为元素判断。
+
+```groovy
+import org.codehaus.groovy.runtime.DefaultGroovyMethods
+
+def nums1=[1,2,3];
+def nums2=[1,2,3];
+assert nums1==nums2 //1
+assert nums1.equals(nums2) //2 同1
+assert  DefaultGroovyMethods.equals(nums1,nums2) //3 同2
+assert !(nums1===nums2)
+```
+
+
+
+### 数组
+
+groovy使用`[]`默认表示`ArrayList`，我们可以as来告诉groovy这是一个数组。而不是List。
+
+声明数组主要有以下方法
+
+- as关键字转化
+
+- 使用类型声明 
+
+  使用类型声明会被强制转化为该类型。
+
+- 使用java风格的数组初始化
+
+```groovy
+def nums=[1,3,4] as int[]
+String[] str=[1,2,'4'] //会隐式转为["1","2","4"]
+String[] str2=nums //会隐式转为["1","3","4"]
+def nums2=new int[]{1,3,4};
+String[] str4=nums2;//会隐式转为["1","3","4"]
+println nums
+```
+
+### Map
