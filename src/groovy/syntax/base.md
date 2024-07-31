@@ -612,6 +612,32 @@ assert nums1.get(1)==2
 >println ((nums2.get(0) as List).get(0)) //我们如果确定第一个一定是List，就可以这样子算
 >```
 
+### 访问
+
+支持使用`[]`,和`get`方法访问。括号访问支持使用负数
+
+```groovy
+def arr=[1,3,4]
+println arr.get(1)
+println arr[-1]
+println arr.get(-1) //报错
+```
+
+#### 等号判断
+
+groovy中list的==判断会变为元素判断。
+
+```groovy
+import org.codehaus.groovy.runtime.DefaultGroovyMethods
+
+def nums1=[1,2,3];
+def nums2=[1,2,3];
+assert nums1==nums2 //1
+assert nums1.equals(nums2) //2 同1
+assert  DefaultGroovyMethods.equals(nums1,nums2) //3 同2
+assert !(nums1===nums2)
+```
+
 #### 左移（<<）运算符
 
 list支持使用`<<`运算符来替代`add`添加元素。可以统一化处理
@@ -632,21 +658,6 @@ def nums=[1,2,3,4,5,5,6,6]
 print(nums[1..3])
 print(nums[1..-1]) //-1表示倒数第一个
 print(nums[-1..0]) //list的反序
-```
-
-#### 等号判断
-
-groovy中list的==判断会变为元素判断。
-
-```groovy
-import org.codehaus.groovy.runtime.DefaultGroovyMethods
-
-def nums1=[1,2,3];
-def nums2=[1,2,3];
-assert nums1==nums2 //1
-assert nums1.equals(nums2) //2 同1
-assert  DefaultGroovyMethods.equals(nums1,nums2) //3 同2
-assert !(nums1===nums2)
 ```
 
 
@@ -674,4 +685,85 @@ String[] str4=nums2;//会隐式转为["1","3","4"]
 println nums
 ```
 
+#### 访问
+
+只支持使用[]访问，负数表示倒数第几个
+
+```groovy
+def arr=[1,3,4] as int[]
+println arr[-1]
+println arr[1]
+```
+
+### 切片
+
+数组同样支持切片，但是编译器警告了
+
+```groovy
+def arr=[1,3,4] as int[]
+println arr[-1..0]
+println arr[-1..0] instanceof List
+```
+
 ### Map
+
+groovy可以直接使用 `[k:v]`定义`Map`。默认实现是使用`LinkedHashMap`。`[:]`表示空的Map
+
+groovy可以直接声明字符串key和数字key。
+
+```groovy
+def map=[a:1,b:2,'c':3,4:4]
+assert  map.a==map['a']
+assert  map.'b'==map['b']
+assert  map.c==map['c']
+assert map[4]==map.get(4)
+assert !(map.'4'==map.get(4))
+```
+
+1. 直接声明时，名字当字符串处理，数字名字当数字处理
+2. 访问时，有如下特性
+   1. 点(.)运算当字符串访问，不支持数字访问
+   2. 括号([])运算访问，属于变量访问，相当于get方法。显然支持数字访问。
+
+#### 赋值
+
+groovy赋值除了创建时赋值，可以在使用的时候改变变量。可以通过`put`方法、括号(`[]`)或点(`.`)运算运算赋值
+
+```groovy
+def map=[:];
+map.put(1,1)
+map[2]=2
+map.c=3;
+```
+
+#### 对象key
+
+map支持使用对象类型的key。定义时使用()包围
+
+```groovy
+def k1=new Object();
+def k2=new Object();
+def map=[(k1):1,k1:2]
+map.put(k2,3)
+assert map.k1!=map[k1]
+assert map[k2]!=map[k1]
+```
+
+#### GString类型的key
+
+因为前面提到[GString和String的hashcode](#GString和String的hashcode)，GString的是内部字符串hashcode+37。所以不推荐GString使用在Map中。
+
+```groovy
+def a="${'c'}";
+def b="${'c'}"
+def map=[(a):1]
+println map.get(a) //1
+println map.get(b) //1
+println map["c"] //null
+println map.c //null
+println map.get("c") //null
+println map[a] //null
+println map[b] //null
+```
+
+由此可以看出，只有get能取出值，get与点运算和括号运算表现不同，所以不推荐使用GString作为key。
