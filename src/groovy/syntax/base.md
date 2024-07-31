@@ -552,11 +552,13 @@ def res=c*d; //Integer
 
 
 
-对于除法`/`操作，默认会转为BigDecimal。如果有类型会再转回来。（def推断的按没有类型处理）
+<span id="div-calc">对于除法`/`操作</span>
+
+默认会转为BigDecimal。如果有类型会再转回来。（def推断的按没有类型处理）
 
 
 
-对于幂操作`**`有如下结果
+<span id="power-calc">对于幂操作`**`有如下结果</span>
 
 - 如果指数是浮点数
   - 如果结果可以表示为`Integer`，则返回`Integer`

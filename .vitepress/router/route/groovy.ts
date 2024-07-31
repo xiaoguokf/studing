@@ -37,6 +37,14 @@ export const groovy:Route={
                             link: "semantics/index"
                         }
                     ]
+                },    {
+                    text: "运算符",
+                    items: [
+                        {
+                            text: "基础运算符",
+                            link: "operators/index"
+                        }
+                    ]
                 },
             ]
         },
