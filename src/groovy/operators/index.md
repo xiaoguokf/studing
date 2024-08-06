@@ -104,19 +104,110 @@ a**=2; //a=a**2;
 
 ## 关系运算符
 
-groovy关系运算在数值是表现差不多。
+groovy关系运算在数值是表现差不多。在等于判断时
 
-| 运算符 | 解释                           |
-| :----- | :----------------------------- |
-| `==`   | 等于                           |
-| `!=`   | 不等于                         |
-| <      | 小于                           |
-| `<=`   | 小于或等于                     |
-| `>`    | 大于                           |
-| `>=`   | 大于或等于                     |
-| `===`  | 全等于（自 Groovy 3.0.0 起）   |
-| `!==`  | 不全等于（自 Groovy 3.0.0 起） |
+| 运算符 | 解释                                      |
+| :----- | :---------------------------------------- |
+| `==`   | 等于 相当于`equals()`                     |
+| `!=`   | 不等于                                    |
+| <      | 小于                                      |
+| `<=`   | 小于或等于                                |
+| `>`    | 大于                                      |
+| `>=`   | 大于或等于                                |
+| `===`  | 全等于（自 Groovy 3.0.0 起） 相当于`is()` |
+| `!==`  | 不全等于（自 Groovy 3.0.0 起）            |
 
+
+
+特别注意的是，groovy等等（`==`）不是java中的地址比较。而是被编码为`ScriptBytecodeAdapter.compareEqual(变量1，变量2)`
+
+::: details ScriptBytecodeAdapter.compareEqual源码分析
+
+```java
+//ScriptBytecodeAdapter.compareEqual
+public static boolean compareEqual(final Object left, final Object right) {
+    if (left == right) return true;
+    if (left != null && right != null) {
+        Class leftClass = left.getClass();
+        if (leftClass == right.getClass()) {
+            if (leftClass == Integer.class) {
+                return left.equals(right);
+            }
+            if (leftClass == BigDecimal.class) {
+                return ((BigDecimal) left).compareTo((BigDecimal) right) == 0;
+            }
+            if (leftClass == BigInteger.class) {
+                return ((BigInteger) left).compareTo((BigInteger) right) == 0;
+            }
+            if (leftClass == Long.class) {
+                return left.equals(right);
+            }
+            if (leftClass == Double.class) {
+                return left.equals(right);
+            }
+            if (leftClass == Float.class) {
+                return left.equals(right);
+            }
+            if (leftClass == String.class) {
+                return left.equals(right);
+            }
+            if (leftClass == GStringImpl.class) {
+                return left.equals(right);
+            }
+        }
+    }
+    return DefaultTypeTransformation.compareEqual(left, right);
+}
+//DefaultTypeTransformation.compareEqual
+public static boolean compareEqual(Object left, Object right) {
+    if (left == right) return true;
+    if (left == null) return right instanceof NullObject;
+    if (right == null) return left instanceof NullObject;
+    if (left instanceof Comparable) {
+        return compareToWithEqualityCheck(left, right, true) == 0;
+    }
+    // handle arrays on both sides as special case for efficiency
+    Class leftClass = left.getClass();
+    Class rightClass = right.getClass();
+    if (leftClass.isArray() && rightClass.isArray()) {
+        return compareArrayEqual(left, right);
+    }
+    if (leftClass.isArray() && leftClass.getComponentType().isPrimitive()) {
+        left = primitiveArrayToUnmodifiableList(left);
+    }
+    if (rightClass.isArray() && rightClass.getComponentType().isPrimitive()) {
+        right = primitiveArrayToUnmodifiableList(right);
+    }
+    if (left instanceof Object[] && right instanceof List) {
+        return DefaultGroovyMethods.equals((Object[]) left, (List) right);
+    }
+    if (left instanceof List && right instanceof Object[]) {
+        return DefaultGroovyMethods.equals((List) left, (Object[]) right);
+    }
+    if (left instanceof List && right instanceof List) {
+        return DefaultGroovyMethods.equals((List) left, (List) right);
+    }
+    if (left instanceof Map.Entry && right instanceof Map.Entry) {
+        Object k1 = ((Map.Entry) left).getKey();
+        Object k2 = ((Map.Entry) right).getKey();
+        if (Objects.equals(k1, k2)) {
+            Object v1 = ((Map.Entry) left).getValue();
+            Object v2 = ((Map.Entry) right).getValue();
+            return v1 == v2 || (v1 != null && DefaultTypeTransformation.compareEqual(v1, v2));
+        }
+        return false;
+    }
+    return (Boolean) InvokerHelper.invokeMethod(left, "equals", right);
+}
+```
+
+观察上方代码
+
+groovy会先判断是否是简单类型（`Integer、Long、Double`等 ）的判断，走简单逻辑。
+
+如果都不是就会走复杂（数组，集合，Map）的类型的逻辑。如果都不是groovy处理的类型，就会走`equals`方法
+
+:::
 
 
 
