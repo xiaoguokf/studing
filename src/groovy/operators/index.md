@@ -22,7 +22,7 @@ groovy运算符相比java有所增强。例如：指数运算`**`、操作符重
 shell = new GroovyShell()
 void pv(String value) {
     def res = shell.evaluate(value)
-    println  "$value = $res(${res.getClass().getS impleName()})"
+    println  "$value = $res(${res.getClass().getSimpleName()})"
 }
 
 pv "1+1"
@@ -349,3 +349,214 @@ eq b ^ c, a
 println Integer.toBinaryString(~d)
 ```
 
+### 位移运算
+
+groovy采用java相同的位移机制。但是groovy支持运算符重载。可自定义数据结构，然后重写方法。
+
+```groovy
+assert 16 == 2 << 3
+assert  64 == 128 >>1
+```
+
+
+
+我们可以重载位移操作符达到我们需要的目的。集合类就是被重写了左移
+
+::: code-group
+
+
+```groovy [左移示例]
+class Output {
+    def leftShift(Object out) {
+        System.out.print(out)
+    }
+}
+def out=new Output();
+out<<"666"
+```
+
+```groovy [右移示例]
+class Input {
+    def rightShift(build b) {
+        Scanner scanner=new Scanner(System.in);
+        def next = scanner.next()
+        b.input(next)
+    }
+}
+interface build{
+    input(String value);
+}
+def input = new Input()
+String str;
+input>>(value->str=value) //java不允许赋值的，但是groovy允许，被转义成了set方法。
+println str;
+```
+
+:::
+
+## 条件运算符
+
+### 取反(!)运算符
+
+groovy中!取反。
+
+```groovy
+assert (!true)    == false                      
+assert (!'str')   == false                      
+assert (!'')      == true  
+```
+
+### 三目运算符
+
+三元操作符如下
+
+```groovy
+def res= true?1:2;
+```
+
+#### Elvis 表达式
+
+有时候，我们想如果不是空就为另外一个值。我们就靠三目运算符。
+
+```groovy
+res?res:"other"
+```
+
+我们可以省略res。
+
+```groovy
+res?:"other"
+```
+
+与js不同的是。js不是省略元素。是判断是否有效来说的。`0`，`""`算有效元素
+
+::: code-group
+
+```groovy [groovy]
+""?:"other" //other
+null?:"other" //other
+"1"?:"other" //1
+0?:1 //1
+```
+
+```js [js]
+""??"other"//空字符串
+null??"other" //other
+undefined??"other" //other
+0??2 //0
+1??2 //1
+```
+
+:::
+
+#### Elvis 赋值运算符。
+
+如果用在赋值运算。可以使用`?=`进一步简化运算。
+
+```groovy
+res=0;
+res?=2; //<=> res=res?:2 <=>res=res?res:2;
+println res
+```
+
+## 对象运算符
+
+### 安全导航运算符
+
+groovy提供了和js(es2015)一样的安全导航运算符。使用?.来判断元素是否存在。
+
+```groovy
+class Obj{
+    String file;
+}
+Obj obj=null;
+print obj?.file
+```
+
+### 直接访问运算符
+
+groovy中调用属性是优先采用getter来访问的。
+
+对应如下java类：
+
+```java
+
+public class JUser {
+    public String username;
+    public String password="123456";
+
+    public String getPassword() {
+        System.out.println("我被访问了");
+        return password;
+    }
+}
+```
+
+在groovy中访问两个元素有如下提示：
+
+![image-20240807023312531](assets/image-20240807023312531.png)
+
+可以观察到，username显示是一个field。password显示是一个getter。但是在一些情况，我们想直接访问元素，我们可以使用`@`关键字来直达变量
+
+```groovy
+def user = new JUser()
+def username = user.username
+assert user.password==user.@password
+assert user.password==user.@"password"
+```
+
+在idea中，属性特别显示紫色。
+
+![image-20240807024203279](assets/image-20240807024203279.png)
+
+
+
+### 方法指针运算符
+
+我们可以将对象的方法存起来（`.&`）。我们会得到一个闭包函数（Closure）然后稍后调用他。相当于回调函数。
+
+```groovy
+class People{
+    def sayHello(){
+        println "hello"
+    }
+    static void sayHello2(){
+        println "hello2"
+    }
+}
+def method=new People().&sayHello
+method()
+def method2=new People().&sayHello2
+method2()
+```
+
+
+
+例如我们可以将一些库的方法，结构出来使用。比如这个计算器的add方法
+
+```groovy
+class Calculator {
+    static int add(int a, b) {
+        a + b;
+    }
+}
+Closure<Integer> add = Calculator.&add
+println add(1, 2)
+println add(2, 3)
+```
+
+### 方法引用运算符
+
+groovy 3+支持jdk8+的方法引用运算符。使用`变量::方法` 来传入方法
+
+下列将List\<Integer\>转为String如下：
+
+```groovy
+Object array = [1, 2, 3]
+        .stream()
+        .map(String::valueOf)
+        .toArray(String[]::new)// String[]::new <=> size->new String[size]
+assert array instanceof String[]
+```
+
+使用方法引用简化了操作。
