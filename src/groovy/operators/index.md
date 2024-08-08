@@ -560,3 +560,379 @@ assert array instanceof String[]
 ```
 
 使用方法引用简化了操作。
+
+
+
+## 正则运算符
+
+脚本在字符串的匹配，搜索是家常便饭。所以groovy简化了正则的操作。简化了正则的三个阶段 Pattern Matcher find
+
+### Pattern运算符
+
+这是一个一元操作符使用`~`作用在字符串上，就会产生一个Pattern对象。
+
+```groovy
+import java.util.regex.Pattern
+
+def pattern= ~/a/;
+assert pattern instanceof  Pattern
+```
+
+### Find 运算符
+
+这是一个二元运算符`=~` ，使用 `输入=~正则字符串`来匹配字符串，产生一个Matcher对象。然后可以进行find操作来查询结果。
+
+```groovy
+import java.util.regex.Matcher
+
+def matcher= "aaa"=~/a/
+assert  matcher instanceof Matcher
+```
+
+groovy中matcher可以用来做判断条件的。
+
+可点击 [Groovy Truth Matcher](../semantics/index#reg-matcher)进一步了解
+
+find方法每次find会获得下一次匹配的内容。group返回的是当前匹配的组。
+
+```groovy
+def m= "ab" =~"(.)"
+assert m;
+assert m.group(0)=="a"
+assert m
+assert m.group(0)=="b"
+```
+
+#### Groovy中的Matcher
+
+groovy对matcher进行了增强。
+
+- 括号运算
+
+  使用括号运算符会查找第几次结果，第几次的值。
+
+  ```groovy
+  def m= "ab" =~"(.)"
+  assert m[0][0]=="a" // (.) 整体外层
+  assert m[0][1]=="a" // (.) 分组内层的点
+  assert m[1][0]=="b" // (.) 整体外层
+  assert m[1][1]=="b" // (.) 分组内层的点
+  ```
+
+  ::: details StringGroovyMethods#getAt(java.util.regex.Matcher, int)
+
+  ```groovy
+  public static Object getAt(final Matcher self, int index) {
+      try {
+          int count = getCount(self);
+          if (index < -count || index >= count) {
+              throw new IndexOutOfBoundsException("index is out of range " + (-count) + ".." + (count - 1) + " (index = " + index + ")");
+          }
+          index = normaliseIndex(index, count);
+          Iterator iter = iterator(self);
+          Object result = null;
+          for (int i = 0; i <= index; i++) {
+              result = iter.next();
+          }
+          return result;
+      }
+      catch (IllegalStateException ex) {
+          return null;
+      }
+  ```
+
+  :::
+
+- size方法
+
+  返回匹配个数。
+
+  ::: details StringGroovyMethods#size(java.util.regex.Matcher)
+
+  ```groovy
+  public static long size(final Matcher self) {
+      return getCount(self);
+  }
+  public static int getCount(final Matcher self) {
+      int counter = 0;
+      self.reset(); //会被reset之后从头开始。
+      while (self.find()) {
+          counter += 1;
+      }
+      return counter;
+  }
+  ```
+
+  :::
+
+### Match 运算符
+
+这是一个二元运算符`==~`，使用 `输入=~正则字符串`来匹配字符串，产生一个Boolean对象。用于**单精度匹配**。
+
+```groovy
+boolean  res= "a" ==~"a"//<=> "a".matches("a")
+assert res;
+def str="abc";
+assert !(str==~"a")
+assert str==~"abc" 
+assert str==~/^abc$/
+```
+
+
+
+> [!TIP] Find运算符与Match 运算符的区别
+>
+> - Match 运算符用于单个精确匹配，属于全匹配。省略`^$`
+>
+> - Find运算符 用于查询多个结果用于模糊匹配。
+
+
+
+## 其他运算符
+
+### 扩展运算符
+
+#### 数组对象的扩展
+
+有时候我们想获取对象数据的某个字段，然后组成一个数组，我们最快的是使用Stream流来操作。
+
+现在groovy提供了传播运算符，可以去对象数组的某个字段，组成数组。
+
+```groovy
+import java.util.stream.Stream
+
+class User {
+    String username;
+    String getUsername() {
+        return username
+    }
+    User(String username) {
+        this.username = username
+    }
+}
+
+def users = [new User("XM"), new User("XH")] as User[]
+//java方法
+List<String> jUsernameList = Stream.of(users).map(u->u.username).toList() //这里方法引用会被警告,暂时不理解，就直接使用lambda吧
+//groovy方法
+def gUsernameList = users*.username;
+assert  jUsernameList==gUsernameList
+```
+
+可以使用数组封为最终结果。
+
+```groovy
+def usernameArr = users*.username as String[];
+```
+
+也可以直接使用list取。
+
+```groovy
+def usernameList = [new User("XM"), new User("XH")] *.username;
+```
+
+#### 方法的扩展
+
+
+
+#### 列表的扩展
+
+
+
+#### Map的扩展
+
+
+
+### 范围运算符
+
+
+
+### 比较运算符
+
+
+
+### 下标[]运算符
+
+
+
+### 安全索引运算符
+
+
+
+### 成员判断运算符
+
+
+
+### 全等()运算符
+
+前面讲到===用来
+
+### 转换操作符
+
+groovy我们经常用到`as`转换为某个值。他其实内部是执行了asType方法。groovy帮我们实现了很多常用的转型。
+
+```groovy
+Integer i0= (Integer)'42' //报错，无法强转
+Integer i= "42" as Integer
+Integer[] is= [] as Integer[]
+```
+
+#### 自定义转型
+
+我们可以通过重写类的asType方法实现实例的转型。
+
+```groovy
+class MP3 {
+
+    String filename;
+
+    Object asType(Class clazz) {
+        if (clazz == WAV) {
+            def wav = new WAV()
+            wav.filename=filename;
+            return wav;
+        }
+        throw  new ClassCastException("MP3 无法转为 $clazz")
+    }
+}
+
+class WAV {
+    String filename;
+    Object asType(Class clazz) {
+        if (clazz == MP3) {
+            def mp3 = new MP3()
+            mp3.filename=filename;
+            return mp3
+
+        }
+        throw   new ClassCastException("WAV 无法转为 $clazz")
+    }
+}
+
+def mp3 = new MP3()
+mp3.filename="aaa"
+def wav = mp3 as WAV
+assert wav.filename==mp3.filename
+```
+
+### 钻石操作符
+
+也就是泛型
+
+```groovy
+List<String> arr=new ArrayList<>()
+```
+
+### 方法调用运算符
+
+诚然，在java中方法就是方法，对象就是对象。groovy支持call()重载，实现对象的调用。
+
+```groovy
+import java.util.stream.Stream
+
+class Add{
+    //static可加可不加
+    static int call(int a, int b){
+        return a+b;
+    }
+    static int call(int...nums){
+        def integers = nums as Integer[] //不能直接传，groovy无法自动装箱，可能是bug
+        return Stream.of(integers).mapToInt(i->i).sum();
+    }
+    static int call(List<Integer> nums){
+        return nums.stream().mapToInt(i->i).sum();
+    }
+}
+def add = new Add()
+println add(1, 2)
+println add(1, 2,3)
+def of = List.of(1, 2, 3)
+println add(of)
+//println Add(1, 2) //报错找不到方法
+```
+
+## 操作符优先级
+
+| 等级 | 操作人员                                                     | 姓名                                                         |
+| :--- | :----------------------------------------------------------- | :----------------------------------------------------------- |
+| 1    | `new`  `()`                                                  | 对象创建，显式括号                                           |
+|      | `()`  `{}`  `[]`                                             | 方法调用、闭包、下标运算                                     |
+|      | `.`  `.&`  `.@`                                              | 成员访问、方法闭包、字段/属性访问                            |
+|      | `?.`  `*`  `*.`  `*:`                                        | 安全解除引用、扩展、扩展点、扩展图                           |
+|      | `~`  `!`  `(type)`                                           | 按位取反/模式，非，类型转换                                  |
+|      | `[]`  `?[]`  `++`  `--`                                      | 列表/映射/数组（安全）索引，后增/减                          |
+| 2    | `**`                                                         | 求幂                                                         |
+| 3    | `+` `--`  `-`                                                | 预增加/减少，一元加法，一元减法                              |
+| 4    | `*`  `/`  `%`                                                | 乘、除、余数                                                 |
+| 5    | `+`  `-`                                                     | 加法、减法                                                   |
+| 6    | `<<`  `>>`  `>>>`  `..`  `..<`  `<..<`  `<..`                | 左/右（无符号）移位，包含/排除范围                           |
+| 7    | `<`  `<=`  `>`  `>=`  `in`  `!in`  `instanceof`  `!instanceof`  `as` | 小于/大于/或等于、在、不在、instanceof、非instanceof、类型强制 |
+| 8    | `==`  `!=`  `<=>`  `===`  `!==`                              | 等于、不等于、比较、相同、不相同                             |
+|      | `=~`  `==~`                                                  | 正则表达式查找，正则表达式匹配                               |
+| 9    | `&`                                                          | 二进制/按位与                                                |
+| 10   | `^`                                                          | 二进制/按位异或                                              |
+| 11   | `|`                                                          | 二进制/按位或                                                |
+| 12   | `&&`                                                         | 逻辑和                                                       |
+| 13   | `||`                                                         | 逻辑或                                                       |
+| 14   | `? :`                                                        | 三元条件                                                     |
+|      | `?:`                                                         | elvis 运算符                                                 |
+| 15   | `=`  `**=`  `*=`  `/=`  `%=`  `+=`  `-=`  `<<=`  `>>=`  `>>>=`  `&=`  `^=`  `|=`   `?=` | 赋值运算                                                     |
+
+## 运算符重载
+
+java不支持运算符重载，目的是减少意外的运算导致可阅读性降低，但是也减少了其可扩展性。
+
+groovy有一个好处就是支持运算符重载，可以重载常用的操作符达到自定义我们数据结构的目的。
+
+| 运算符 | 方法          | 运算符     | 方法                    |
+| :----- | :------------ | :--------- | :---------------------- |
+| `+`    | a.plus(b)     | `a[b]`     | a.getAt(b)              |
+| `-`    | a.minus(b)    | `a[b] = c` | a.putAt(b, c)           |
+| `*`    | a.multiply(b) | `a in b`   | b.isCase(a)             |
+| `/`    | a.div(b)      | `<<`       | a.leftShift(b)          |
+| `%`    | a.mod(b)      | `>>`       | a.rightShift(b)         |
+| `**`   | a.power(b)    | `>>>`      | a.rightShiftUnsigned(b) |
+| `|`    | a.or(b)       | `++`       | a.next()                |
+| `&`    | a.and(b)      | `--`       | a.previous()            |
+| `^`    | a.xor(b)      | `+a`       | a.positive()            |
+| `as`   | a.asType(b)   | `-a`       | a.negative()            |
+| `a()`  | a.call()      | `~a`       | a.bitwiseNegate()       |
+
+下列举例一个复数运算
+
+实现了加法和乘法，后续可以实现除法和减法
+
+```groovy
+class Complex {
+
+    BigDecimal a;
+    BigDecimal b;
+
+    Complex(BigDecimal a, BigDecimal b) {
+        this.a = a
+        this.b = b
+    }
+    String toString() {
+        return "${a?a.stripTrailingZeros():""}${a*b!=0&&b>0?"+":""}${b?b.stripTrailingZeros()+"i":""}"
+    }
+    Complex plus(Complex other) {
+        def complex = new Complex(0.0g,0.0g)
+        complex.a = a + other.a
+        complex.b = b + other.b
+        return complex
+    }
+    Complex multiply(Complex other){
+        def complex = new Complex(0.0g,0.0g)
+        complex.a = a * other.a -b*other.b
+        complex.b= a*other.b+b*other.a
+        return complex;
+    }
+}
+
+def c1 = new Complex(1.0g, 1.0g)
+def c2 = new Complex(1.0g, 1.0g)
+def c3 = new Complex(1.0g, -1.0g)
+println c1+c2
+println c1*c2
+println c1*c3
+```

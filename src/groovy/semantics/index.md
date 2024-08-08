@@ -32,7 +32,7 @@ def list=[1];
 assert list;
 ```
 
-### 正则匹配
+### <span id="reg-matcher">正则匹配</span>
 
 正则发生匹配后产生一个`Matcher`类。内部会调用`Matcher`实例的`find()`方法。正则运算可以使用`字符串 =~ 正则字符串`来快速匹配。
 
@@ -40,6 +40,21 @@ assert list;
 def matcher = "a" =~ /a/
 if (matcher)
    assert !matcher.find()
+```
+
+如果左边不是字符串，左边会自动执行toString方法再进行匹配。
+
+```groovy
+class Obj{
+    @Override
+    String toString(){
+       return  "ok"
+    }
+}
+def matcher= 1=~/1/
+assert  matcher
+def obj = new Obj()
+assert  obj=~"ok"
 ```
 
 ### 迭代器和枚举
