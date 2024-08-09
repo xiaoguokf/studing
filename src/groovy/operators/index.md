@@ -473,6 +473,10 @@ Obj obj=null;
 print obj?.file
 ```
 
+数组也有类似的方法
+
+[安全索引运算符](#安全索引运算符)
+
 ### 直接访问运算符
 
 groovy中调用属性是优先采用getter来访问的。
@@ -690,7 +694,9 @@ assert str==~/^abc$/
 
 ## 其他运算符
 
-### 扩展运算符
+### 扩展(解构)运算符
+
+在js中类似的是解构。python也有。相对应的有赋值，在语义篇会讲到
 
 #### 数组对象的扩展
 
@@ -733,39 +739,321 @@ def usernameList = [new User("XM"), new User("XH")] *.username;
 
 #### 方法的扩展
 
+有时候我们可以将list作为参数解构到参数上。方便计算。这个和python类似
 
+```groovy
+import java.util.stream.Stream
+
+int add(int x,int y){
+    return x+y;
+}
+int add(int x,int y,int z){
+    return x+y+z;
+}
+int add(Integer ...nums){
+    return Stream.of(nums).mapToInt(Integer::valueOf).sum()
+}
+void printScore(String name,int score){
+    println "$name's socre is $score"
+}
+def tuple2=[1,2]
+def tuple3=[1,2,3]
+def tuple4=[1,2,3,4]
+assert add(*tuple2)==3 //int add(int x,int y)
+assert add(*tuple3)==6 //int add(int x,int y,int z)
+assert add(*tuple4)==10 //int add(Integer ...nums)
+
+def args=["xm",100]
+printScore(*args)
+```
+
+##### map作为参数
+
+有list作为参数，也有map作为参数。这个会在后续揭晓。
 
 #### 列表的扩展
 
+*list在运算的右侧,想到与添加操作
 
+```groovy
+def arr=[1]
+def arrCopy=[*arr]
+def arrAdd=[*arr,2,3]
+assert  arrCopy==arr
+assert  arrAdd==[1,2,3]
+```
 
 #### Map的扩展
 
+*map在运算的右侧，相对于将他的key都加入到新的map里面。
 
+```groovy
+def uMap=[username:"xm"]
+def aMap=[age:19]
+
+def fullMap=[*:uMap,*:aMap]
+assert fullMap==[username:"xm",age:19]
+```
 
 ### 范围运算符
 
+groovy中，定义了一种范围`start..end`，从start自增1到end的列表的**表示**。可以遍历或者和list比较。基类为`Range`.主要有IntRange，NumberRange两类。存在不等号时不包含边界。
 
+```groovy
+assert 1..2 instanceof IntRange
+assert 1.1..2 instanceof NumberRange
+assert 0..<0 instanceof EmptyRange
+assert (1..2).toString()=='1..2'
+assert 1..4==[1,2,3,4]
+assert 1<..<4==[2,3]
+assert 1.1..4==[1.1,2.1,3.1]
+assert 1.1..<5.1==[1.1,2.1,3.1,4.1]
+```
+
+范围可以反方向的。
+
+```groovy
+assert 3..1 == [3, 2, 1]
+assert 3<..1 == [2, 1]
+```
+
+#### 用在字符串
+
+范围也可以使用在字符串内。实例化是ObjectRange。会编程
+
+```groovy
+assert 'a'..'c' instanceof ObjectRange
+assert 'a'..'c'==['a','b','c']
+assert 'xa'..'xc'==['xa','xb','xc']
+```
+
+#### 自定义对象范围
+
+如果我们想要自定义..运算,我们就要实现`Comparable<T>`和 `T next()` 和`T previous()`方法  。必要时实现toString方法,方便显示 。
+
+- 顺序实现next方法
+- 逆序实现previous方法
+
+最好两个都实现,方便兼容
+
+```groovy
+class Num implements Comparable<Num> {
+    Number value;
+    Num(Number value) {
+        this.value = value
+    }
+
+    @Override
+    int compareTo(Num o) {
+        return value - o.value
+    }
+
+    @Override
+    String toString() {
+        return value;
+    }
+
+    Num next() {
+        return new Num(value + 1)
+    }
+}
+
+
+def p1 = new Num(1)
+def p2 = new Num(6)
+println p1..p2
+def nums = p1..p2
+println nums.value
+```
 
 ### 比较运算符
 
+groovy可以使用`<=>`来比较两个数。返回 -1 0 1这三个值
 
+::: code-group 
+
+```groovy [groovy]
+class Num implements Comparable<Num>{
+    Number num;
+
+    Num(Number num) {
+        this.num = num
+    }
+
+    @Override
+    int compareTo(Num o) {
+        return num-o.num
+    }
+}
+println 1 <=>2
+println new Num(1) <=> new Num(9)
+println new Num(9) <=> new Num(1)
+```
+
+```[打印结果]
+-1
+-1
+1
+```
+
+:::
+
+上方打印结果可以看出。不是返回`num-o.num`的compareTo方法的结果，他还做了简化处理。
 
 ### 下标[]运算符
 
+java中下标运算只能是数组，而groovy重写了下标运算符。可以在非数组类上使用下标运算。
 
+::: code-group
+
+```groovy [groovy]
+def list=[1,2,3]
+println list[0]
+```
+
+```java [java]
+List<Integer> integers = List.of(1, 2, 3);
+System.out.println(integers);
+```
+
+:::
 
 ### 安全索引运算符
 
+前面提到[安全导航运算符](#安全导航运算符)可以先判断变量是否存在然后再获取里面的内容。对于数组我们也同理。使用?[]访问成员，
 
+```groovy
+def a=[1,2]
+List<String> b=null;
+println a?[1]
+println a?[2]
+println b?[2]
+```
 
 ### 成员判断运算符
 
+用于判断变量是否为集合内成员。in表示属于集合内成员。
 
+```groovy
+def list = [1, 2, 3]
+assert 1 in list //等价于下列语句
+assert  list.isCase(1) 
+assert 4 !in list //等价于下列语句
+assert  list.isNotCase(4)
+```
+
+in操作符通常使用在switch语句。默认执行in语句。
+
+```groovy
+def x = 66;
+
+switch (x) {
+    case 1 -> { //元素判断
+        println 1;
+    }
+    case [2, 3, 4] -> { //集合判断
+        println "in ${[2,3,4]}";
+    }
+    case Integer->{ //实例判断
+        println "is integer";
+    }
+    default -> { 
+        println "not integer"
+    }
+}
+```
+
+::: details  isCase源码
+
+在DefaultGroovyMethods类下有下列方法
+
+```java
+//集合判断
+
+public static boolean isCase(Collection caseValue, Object switchValue) {
+    return caseValue.contains(switchValue);
+}
+
+//值判断
+public static boolean isCase(Object caseValue, Object switchValue) {
+    if (caseValue.getClass().isArray()) {
+        return isCase(DefaultTypeTransformation.asCollection(caseValue), switchValue);
+    }
+    return caseValue.equals(switchValue);
+}
+//实例判断
+public static boolean isCase(Class caseValue, Object switchValue) {
+    if (switchValue instanceof Class) {
+        Class val = (Class) switchValue;
+        return caseValue.isAssignableFrom(val);
+    }
+    return caseValue.isInstance(switchValue);
+}
+
+```
+
+:::
+
+#### 自定义in操作符
+
+通过写入boolean isCase(Object value)方法，实现 in的重载。
+
+```groovy
+class PeopleList {
+
+    List<String> list;
+
+    PeopleList(List<String> list) {
+        this.list = list
+    }
+    @Override
+    boolean isCase(Object value) {
+        return value in list;
+    }
+}
+
+def people = new PeopleList(["xm", "xh"])
+assert "xm" in people;
+assert "xl" !in people;
+```
 
 ### 全等()运算符
 
-前面讲到===用来
+前面讲到===用来判断全等，其实其内部原理是使用is方法来实现的。内部使用了等号判断是否相同内存实例
+
+```groovy
+class People{
+    @Override
+    boolean equals(Object obj) {
+        return  obj instanceof People;
+    }
+}
+def p1=new People()
+def p2=new People()
+
+assert  p1==p2 //groovy中的equals
+assert  p1.is(p2) //等号
+assert Objects.equals(p1,p2) //类似等号比较然后执行equals
+```
+
+
+
+::: details is源码
+
+```java
+//DefaultGroovyMethods#is
+public static boolean is(Object self, Object other) {
+    return self == other;
+}
+
+//===会被执行这个
+//ScriptBytecodeAdapter#compareIdentical
+public static boolean compareIdentical(Object left, Object right) {
+    return left == right;
+}
+```
+
+:::
 
 ### 转换操作符
 
