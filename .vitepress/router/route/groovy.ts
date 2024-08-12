@@ -1,13 +1,13 @@
 import {Route} from "../base/common";
 
-export const groovy:Route={
-    name:"groovy",
-    baseUrl:'/groovy',
-    nav:{
+export const groovy: Route = {
+    name: "groovy",
+    baseUrl: '/groovy',
+    nav: {
         text: "groovy",
         link: "index"
     },
-    sidebar:[
+    sidebar: [
         {
             text: "开始",
             items: [
@@ -28,6 +28,19 @@ export const groovy:Route={
                             link: "syntax/base"
                         }
                     ]
+                }
+                , {
+                    text: "运算符",
+                    items: [
+                        {
+                            text: "基础运算符",
+                            link: "operators/index"
+                        }
+                    ]
+                },
+                {
+                    text: "程序结构",
+                    link: "program-structure/index"
                 },
                 {
                     text: "语义",
@@ -37,15 +50,7 @@ export const groovy:Route={
                             link: "semantics/index"
                         }
                     ]
-                },    {
-                    text: "运算符",
-                    items: [
-                        {
-                            text: "基础运算符",
-                            link: "operators/index"
-                        }
-                    ]
-                },
+                }
             ]
         },
         {
