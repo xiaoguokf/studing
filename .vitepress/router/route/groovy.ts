@@ -43,6 +43,10 @@ export const groovy: Route = {
                     link: "program-structure/index"
                 },
                 {
+                    text: "面向对象",
+                    link: "object-orientation/index"
+                },
+                {
                     text: "语义",
                     items: [
                         {
