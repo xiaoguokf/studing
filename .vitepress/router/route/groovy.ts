@@ -14,6 +14,10 @@ export const groovy: Route = {
                 {
                     text: "概览",
                     link: "index"
+                },
+                {
+                    text: "与java的不同",
+                    link: "groovy-and-java"
                 }
             ]
         },
@@ -58,8 +62,13 @@ export const groovy: Route = {
             ]
         },
         {
-            text: "与java的不同",
-            link: "groovy-and-java"
+            text: "其他",
+            items: [
+                {
+                    text: "在项目中使用groovy",
+                    link: "project/index",
+                }
+            ]
         }
 
     ]

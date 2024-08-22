@@ -2,6 +2,12 @@
 
 groovy很好的兼容方法，但是为了使开发更加便捷，groovy有着不同之处
 
+::: tip 注意
+
+下面内容建议先看完**语言特性**后理解会更加清晰。
+
+:::
+
 ## 默认导入
 
 groovy默认导入比java多的多，java默认导入java.lang.* 而groovy默认导入了lang,io，net,util等，并导入了自己的lang和util包,具体的内容如下

@@ -265,9 +265,45 @@ class C extends BAbstract implements IA {
 
 ## 类的成员
 
-### 构造器
+groovy类成员有两大类：方法和字段。
+
+### 构造方法
+
+属于方法，用于实例化类。没有返回类型（其实返回实例本身）
+
+#### 普通构造函数
+
+通过java风格的方法参数声明的方法。
+
+::: code-group
+
+```groovy [Main.groovy]
+def user=new User("xm",19)
+```
+
+```groovy [User.groovy]
+class User {
+    String username;
+    int age;
+
+    User(String username, int age) {
+        this.username = username
+        this.age = age
+    }
+}
+```
+
+:::
+
+上方User(String username, int age)就是方法的形参。通过输入用户名和age来构造方法。
+
+#### 命名参数
+
+我们构造的时候，我们通过使用类似map的方式传入。让其传入到方法内部。
 
 ### 方法
+
+### 字段
 
 ## 注解
 
