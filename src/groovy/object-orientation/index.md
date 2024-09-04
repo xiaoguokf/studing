@@ -299,11 +299,221 @@ class User {
 
 #### 命名参数
 
-我们构造的时候，我们通过使用类似map的方式传入。让其传入到方法内部。
+我们构造的时候，我们通过使用类似map的方式传入。让其传入到方法内部。以下两个方法都支持构造出函数
+
+```groovy
+class User {
+    String username;
+    String password
+}
+def user = new User(username: "111", password: "111")
+def user2 = new User([username: "111", password: "111"])
+```
 
 ### 方法
 
+#### 方法声明
+
+groovy在方法中使用时有如下特性：
+
+1. groovy方法声名中可以使用def来注明是不确定的类型，默认会被编译成Object类型。
+
+   :::code-group
+
+   ```groovy [Main.groovy]
+   def getObj(def name){
+       return "$name"
+   }
+   //等价于
+   def getObj(name){
+       return "$name"
+   }
+   println getObj("小明")
+   ```
+
+   ```java [编译后的java]
+   public Object getObj(Object name) {
+       return new GStringImpl(new Object[]{name}, new String[]{"", ""});
+   }
+   ```
+
+   :::
+
+2. groovy在重载时，根据运行时决定，优先使用运行时匹配的类型。
+   下列语句在运行时，groovy会去找printType方法，更具参数在运行时的具体类型，obj具体是string时会先找出str的方法，所以会执行`printType(String str)`方法。
+
+   ```groovy
+   def printType(String str){
+       println "str $str"
+   }
+   def printType(Object obj){
+       println "obj $obj"
+   }
+   Object obj="111"
+   Object obj2=1
+   printType(obj) //str 111
+   printType(obj2) //obj 1
+   ```
+
+   ::: details 优先级规则
+
+   - 继承链上按就近原则
+
+   - 数组比对象有更高优先级
+
+     ```groovy
+     def printO(Object o){
+         println "o"
+     }
+     def printO(Object[] o){
+         println "os"
+     }
+     
+     printO([1,2,3]) //o
+     printO([1,2,3] as int[]) //o
+     printO([1,2,3] as Integer[]) //os
+     printO([1,2,3] as Object[]) //os
+     ```
+
+   - 非可变参数优先于可变参数
+
+     ```groovy
+     def vag(int a,int b){
+         println "ab"
+     }
+     def vag(int a,int ...ms){
+         println "a"
+     }
+     vag(1,2) //ab
+     ```
+
+   - 可变参数和可变参数匹配时优先按最多的匹配
+
+     ```groovy
+     def vag(int a,int b,int ...ms){
+         println "ab"
+     }
+     def vag(int a,int ...ms){
+         println "a"
+     }
+     
+     vag(1,2,3,4,4) //ab
+     vag(1,2) //ab
+     vag(1) //a
+     ```
+
+   - 接口优先级大于类继承
+
+     ```groovy
+     interface I2{}
+     class P{}
+     class Impl extends P  implements I2{}
+     def printI(I2 i){
+         println("i2")
+     }
+     def printI(P i){
+         println("p")
+     }
+     printI(new Impl()) //i2
+     ```
+
+   - 对于基元类型，会匹配相同的类型或稍大的类型。
+
+     ```groovy
+     def printNum(Long l){
+         println "l"
+     }
+     def printNum(Short s){
+         println "s"
+     }
+     def printNum(BigInteger b){
+         println "b"
+     }
+     printNum(55) //55是int往大的匹配
+     ```
+
+   
+
+   如果调用时有两个相同的优先级，groovy会报错。
+
+   ```groovy
+   interface I2{}
+   interface I3{}
+   class Impl implements I2,I3{}
+   def printI(I2 i){
+       println("i2")
+   }
+   def printI(I3 i){
+       println("i3")
+   }
+   printI(new Impl()) //报错
+   ```
+
+   :::
+
+3. groovy方法如果有返回类型，总是返回最后一个语句，所以忘记返回类型时可能不会报错。
+
+   如果返回类型与声明的返回类型不匹配时，groovy会尝试强转，如果转不了就报错了
+
+   ```groovy
+   def cal(){
+       "abc"
+   }
+   void cal2(){
+       "abc"
+   }
+   def cal3(name){
+       "$name"
+   }
+   String cal4(){
+       111
+   }
+   int cal5(){ //<=> (int)111 报错，不像string会执行tostring
+       "111"
+   }
+   int cal6(){
+       "1"
+   }
+   println cal() //abc
+   println cal2() //null
+   println cal3("def") //def
+   println cal4() //111  <=> (String)111  <=> 111.toString()
+   ```
+
+#### 命名参数
+
+groovy中方法也支持使用命名参数，他会被集成到一个map参数里去。
+
+```groovy
+def names(Map name){
+    println name.a
+    println name.b
+}
+
+names(a: 1,b: 2)
+names([a: 1,b: 2])
+```
+
+我们可以可以混用的情况，但是map必须是第一个参数。执行时，要么参数在前面，要么map在前面
+
+```groovy
+def names(Map name,int  c,int d){
+    println name.a
+    println name.b
+    println c
+}
+
+names(3,4,a: 1,b: 2)
+names(a: 1,b: 2,3,4)
+```
+
+#### 默认参数
+
+#### 可变参数
+
 ### 字段
+
+
 
 ## 注解
 
