@@ -198,3 +198,10 @@ groovy Main.groovy
 idea中可以直接运行代码
 
 ![image-20240713235953195](assets/image-20240713235953195.png)
+
+
+## 参考文档
+
+[groovy官网](https://groovy-lang.org/)：groovy相关资源下载和新版信息
+
+[groovy官方文档](https://groovy-lang.org/documentation.html)： 本教程参考groovy官网文档学习，具体内容可到官网详细阅读。
