@@ -598,12 +598,157 @@ groovy方法选择是动态的，但是选择得看优先级，主要采用`最�
 
 - **继承实现按就近原则，同级实现大于继承**
 
-  若继承类则
+  对于继承链上，采用最近继承原则，下方代码中的method方法由`I3`个`I1`两个实现类，但是`C1`继承链上`I3`比较近，所以优先采用参数为i3的方法。
+
+  ```groovy
+  interface I1 {}
+  interface I2 extends I1 {}
+  interface I3 {}
+  class C1 implements I3, I2 {}
+  
+  }
+  def method(I1 i1) { 'I1' }
+  def method(I3 i3) { 'I3' }
+  assert method(new C1()) == 'I3'
+  ```
+
+  如果存在同级的选择（一般是实现），则会造成报错。例如`C1`实现了`I3`和`I2`，如果多出一个参数为`I2`的方法就会导致groovy报错
+
+  ::: code-group
+
+  ```groovy
+  interface I1 {}
+  interface I2 extends I1 {}
+  interface I3 {}
+  interface I4 {}
+  class C1 implements I3, I2 {}
+  class C2 extends C1 implements I4{
+  
+  }
+  def method(I1 i1) { 'I1' }
+  def method(I2 i2) { 'I2' }
+  def method(I3 i3) { 'I3' }
+  
+  
+  
+  assert method(new C1()) == 'I3'
+  ```
+
+  ```[日志]log
+  Caught: groovy.lang.GroovyRuntimeException: Ambiguous method overloading for method Params#method.
+  Cannot resolve which method to invoke for [class C1] due to overlapping prototypes between:
+  	[interface I2]
+  	[interface I3]
+  groovy.lang.GroovyRuntimeException: Ambiguous method overloading for method Params#method.
+  Cannot resolve which method to invoke for [class C1] due to overlapping prototypes between:
+  	[interface I2]
+  	[interface I3]
+  	at Params.run(Params.groovy:15)
+  ```
+
+  :::
+
+  groovy中实现大于继承，例如下方`C2`继承了`C1`实现了`I4`，但是打印了实现`I4`
+
+  ```groovy
+  interface I1 {}
+  interface I2 extends I1 {}
+  interface I3 {}
+  interface I4 {}
+  class C1 implements I3, I2 {}
+  class C2 extends C1 implements I4{
+  
+  }
+  def method(I1 i1) { 'I1' }
+  def method(I3 i3) { 'I3' }
+  def method(I4 i4) { 'I4' }
+  def method(C1 c1) { 'C1' }
+  
+  assert method(new C2()) == 'I4'
+  ```
 
 - **对象数组优于对象**
+
+  groovy，如果方法中存在**对象数组**，则**对象数组**优先于**对象**，因为**对象数组**也是**对象**，**对象数组**更加具体
+
+  ```groovy
+  def m(Object o){
+      'o'
+  }
+  def m(Object[] os)
+  {
+      'os'
+  }
+  assert m([1,2,3] as Object[])=='os'
+  assert m([1,2,3])=='o' //因为[1,2,3]是List
+  ```
+
 - **非可变参数变体优于可变参数**
+
+  下方代码add中，1，2作为入参，优先匹配没有可变参数的实体
+
+  ```groovy
+  def add(int a, int b, int ... c) {
+      'a+b+...c'
+  }
+  
+  def add(int a, int b) {
+      'a+b'
+  }
+  
+  assert add(1, 2) == 'a+b'
+  assert add(1, 2, 3) == 'a+b+...c'
+  ```
+
 - **可变参数数量最少优先**
+
+  如果函数都是可变参数的函数，则按可变量最小的函数匹配。下方add(int a, int b, int ... c)比add(int a, int ...c)少一个可变动的因素，故会被优先匹配
+
+  ```groovy
+  def add(int a, int b, Object ... c) {
+      'a+b+...c'
+  }
+  
+  def add(int a, Object ...c) {
+      'a+...c'
+  }
+  
+  assert add(1, 2) ==  'a+b+...c'
+  ```
+
+  > [!TIP] 注意
+  >
+  > 若上方Object改成int则`add(int a, int ...c) `按理来说都不会被匹配上。
+
 - **原始类型使用相同或稍大类型**
+
+  下方代码因为没有int类型，但是在选择中有稍大一点的long，则匹配上long
+
+  ```groovy
+  def method(Long l) { 'Long' }
+  def method(Short s) { 'Short' }
+  def method(BigInteger bi) { 'BigInteger' }
+  
+  assert method(35) == 'Long'
+  ```
+
+#### 异常声明
+
+groovy中无需try-cache编译期的异常，虽然你可以向java那样子做。
+
+::: code-group
+
+```groovy
+new File('doesNotExist.txt').text
+```
+
+```[错误日志]log
+Caught: java.io.FileNotFoundException: doesNotExist.txt (系统找不到指定的文件。)
+java.io.FileNotFoundException: doesNotExist.txt (系统找不到指定的文件。)
+	at Params.run(Params.groovy:1)
+```
+
+:::
 
 ### 字段
 
