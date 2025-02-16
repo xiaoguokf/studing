@@ -1180,7 +1180,7 @@ groovy有一个好处就是支持运算符重载，可以重载常用的操作�
 | `/`    | a.div(b)      | `<<`       | a.leftShift(b)          |
 | `%`    | a.mod(b)      | `>>`       | a.rightShift(b)         |
 | `**`   | a.power(b)    | `>>>`      | a.rightShiftUnsigned(b) |
-| `|`    | a.or(b)       | `++`       | a.next()                |
+| `\|`    | a.or(b)       | `++`       | a.next()                |
 | `&`    | a.and(b)      | `--`       | a.previous()            |
 | `^`    | a.xor(b)      | `+a`       | a.positive()            |
 | `as`   | a.asType(b)   | `-a`       | a.negative()            |
