@@ -5,24 +5,24 @@ groovy运算符相比java有所增强。例如：指数运算`**`、操作符重
 ## 算数运算符
 
 ### 普通（二元）运算符
-| 操作符 | 目的   | 评论                                                     |
-| :----- | :----- | :------------------------------------------------------- |
-| `+`    | 加法   |                                                          |
-| `-`    | 减法   |                                                          |
-| `*`    | 乘法   |                                                          |
-| `/`    | 除法   | 相关特性请点击[整数除法](../syntax/base.md#div-calc)查看 |
-| `%`    | 取余   |                                                          |
-| `**`   | 幂运算 | 相关特性请点击[幂运算](../syntax/base.md#power-calc)查看 |
+
+| 操作符  | 目的  | 评论                                           |
+|:-----|:----|:---------------------------------------------|
+| `+`  | 加法  |                                              |
+| `-`  | 减法  |                                              |
+| `*`  | 乘法  |                                              |
+| `/`  | 除法  | 相关特性请点击[整数除法](../syntax/base.md#div-calc)查看  |
+| `%`  | 取余  |                                              |
+| `**` | 幂运算 | 相关特性请点击[幂运算](../syntax/base.md#power-calc)查看 |
 
 ::: code-group
 
-
-
 ```groovy [main.groovy]
 shell = new GroovyShell()
+
 void pv(String value) {
     def res = shell.evaluate(value)
-    println  "$value = $res(${res.getClass().getSimpleName()})"
+    println "$value = $res(${res.getClass().getSimpleName()})"
 }
 
 pv "1+1"
@@ -66,24 +66,20 @@ pv "4.2**0.5"
 4.2**0.5 = 2.04939015319192(Double)
 ```
 
-
 :::
-
-
 
 ### 一元运算符
 
 简单来说就是带+负号数字或者++、--运算。运算逻辑与java相同
 
 ```groovy
-def a=+1;
-def b=-1;
-def c=a++;
-def d=b--;
-def e=++a;
-def f=--b;
+def a = +1;
+def b = -1;
+def c = a++;
+def d = b--;
+def e = ++a;
+def f = --b;
 ```
-
 
 ### 赋值运算符
 
@@ -97,27 +93,25 @@ def f=--b;
 - `**=`
 
 ```groovy
-def a=1;
-a+=1;
-a**=2; //a=a**2;
+def a = 1;
+a += 1;
+a **= 2; //a=a**2;
 ```
 
 ## 关系运算符
 
 groovy关系运算在数值是表现差不多。在等于判断时
 
-| 运算符 | 解释                                      |
-| :----- | :---------------------------------------- |
-| `==`   | 等于 相当于`equals()`                     |
-| `!=`   | 不等于                                    |
-| <      | 小于                                      |
-| `<=`   | 小于或等于                                |
-| `>`    | 大于                                      |
-| `>=`   | 大于或等于                                |
-| `===`  | 全等于（自 Groovy 3.0.0 起） 相当于`is()` |
-| `!==`  | 不全等于（自 Groovy 3.0.0 起）            |
-
-
+| 运算符   | 解释                              |
+|:------|:--------------------------------|
+| `==`  | 等于 相当于`equals()`                |
+| `!=`  | 不等于                             |
+| <     | 小于                              |
+| `<=`  | 小于或等于                           |
+| `>`   | 大于                              |
+| `>=`  | 大于或等于                           |
+| `===` | 全等于（自 Groovy 3.0.0 起） 相当于`is()` |
+| `!==` | 不全等于（自 Groovy 3.0.0 起）          |
 
 特别注意的是，groovy等等（`==`）不是java中的地址比较。而是被编码为`ScriptBytecodeAdapter.compareEqual(变量1，变量2)`
 
@@ -158,6 +152,7 @@ public static boolean compareEqual(final Object left, final Object right) {
     }
     return DefaultTypeTransformation.compareEqual(left, right);
 }
+
 //DefaultTypeTransformation.compareEqual
 public static boolean compareEqual(Object left, Object right) {
     if (left == right) return true;
@@ -209,57 +204,52 @@ groovy会先判断是否是简单类型（`Integer、Long、Double`等 ）的判
 
 :::
 
-
-
-
 ## 逻辑运算符
 
 逻辑运算符：与`&&`或`||`非`!` 这些运算规则与java保持一致。
 
 ### 逻辑短路
 
-逻辑短路就是 
+逻辑短路就是
 
 - 或运算 第一个为true就直接返回true
 - 与运算第一个为false就直接返回false
 
 ```groovy
 
-res=false;
+res = false;
 
-boolean setTrue(){
-    res=true;
+boolean setTrue() {
+    res = true;
 }
+
 true || setTrue();
 assert !res
 
-res=false;
+res = false;
 false || setTrue();
 assert res;
 
-res=false;
+res = false;
 false && setTrue();
 assert !res;
 
-res=false;
-true&&setTrue();
+res = false;
+true && setTrue();
 assert res;
 ```
-
-
-
-
 
 ## 位运算
 
 groovy位运算与java一致
 
-- `&`: 与运算 
+- `&`: 与运算
 
   仅 1&1为1。
-  
-  <table >
-      <tr>
+
+  <table>
+  <tbody>
+        <tr>
           <td style="width:6em" >数字</td>
           <td style="width:6em">0</td>
           <td style="width:6em" >1</td>
@@ -274,6 +264,8 @@ groovy位运算与java一致
           <td style="width:6em">0</td>
           <td style="width:6em">1</td>
       </tr>
+  </tbody>
+
   </table>
 
 
@@ -281,8 +273,9 @@ groovy位运算与java一致
 
   如果其中一个为1则为1。
 
-  <table >
-      <tr>
+  <table>
+  <tbody>
+        <tr>
           <td style="width:6em" >数字</td>
           <td style="width:6em" >0</td>
           <td style="width:6em" >1</td>
@@ -297,13 +290,16 @@ groovy位运算与java一致
           <td style="width:6em" >1</td>
           <td style="width:6em" >1</td>
       </tr>
+  </tbody>
+
   </table>
 
-- `^`: 亦或运算 
+- `^`: 亦或运算
 
   0^1 或者 1^0为1。
 
-  <table >
+  <table>
+  <tbody>
       <tr>
           <td style="width:6em" >数字</td>
           <td style="width:6em" >0</td>
@@ -319,6 +315,8 @@ groovy位运算与java一致
           <td style="width:6em" >1</td>
           <td style="width:6em" >0</td>
       </tr>
+  </tbody>
+
   </table>
 
 - `~`: 非运算
@@ -355,15 +353,12 @@ groovy采用java相同的位移机制。但是groovy支持运算符重载。可�
 
 ```groovy
 assert 16 == 2 << 3
-assert  64 == 128 >>1
+assert 64 == 128 >> 1
 ```
-
-
 
 我们可以重载位移操作符达到我们需要的目的。集合类就是被重写了左移
 
 ::: code-group
-
 
 ```groovy [左移示例]
 class Output {
@@ -371,24 +366,27 @@ class Output {
         System.out.print(out)
     }
 }
-def out=new Output();
-out<<"666"
+
+def out = new Output();
+out << "666"
 ```
 
 ```groovy [右移示例]
 class Input {
     def rightShift(build b) {
-        Scanner scanner=new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         def next = scanner.next()
         b.input(next)
     }
 }
-interface build{
+
+interface build {
     input(String value);
 }
+
 def input = new Input()
 String str;
-input>>(value->str=value) //java不允许赋值的，但是groovy允许，被转义成了set方法。
+input >> (value -> str = value) //java不允许赋值的，但是groovy允许，被转义成了set方法。
 println str;
 ```
 
@@ -401,9 +399,9 @@ println str;
 groovy中!取反。
 
 ```groovy
-assert (!true)    == false                      
-assert (!'str')   == false                      
-assert (!'')      == true  
+assert (!true) == false
+assert (!'str') == false
+assert (!'') == true  
 ```
 
 ### 三目运算符
@@ -411,7 +409,7 @@ assert (!'')      == true
 三元操作符如下
 
 ```groovy
-def res= true?1:2;
+def res = true ? 1 : 2;
 ```
 
 #### Elvis 表达式
@@ -419,13 +417,13 @@ def res= true?1:2;
 有时候，我们想如果不是空就为另外一个值。我们就靠三目运算符。
 
 ```groovy
-res?res:"other"
+res ? res : "other"
 ```
 
 我们可以省略res。
 
 ```groovy
-res?:"other"
+res ?: "other"
 ```
 
 与js不同的是。js不是省略元素。是判断是否有效来说的。`0`，`""`算有效元素
@@ -433,18 +431,18 @@ res?:"other"
 ::: code-group
 
 ```groovy [groovy]
-""?:"other" //other
-null?:"other" //other
-"1"?:"other" //1
-0?:1 //1
+"" ?: "other" //other
+null ?: "other" //other
+"1" ?: "other" //1
+0 ?: 1 //1
 ```
 
 ```js [js]
-""??"other"//空字符串
-null??"other" //other
-undefined??"other" //other
-0??2 //0
-1??2 //1
+"" ?? "other"//空字符串
+null ?? "other" //other
+undefined ?? "other" //other
+0 ?? 2 //0
+1 ?? 2 //1
 ```
 
 :::
@@ -454,8 +452,8 @@ undefined??"other" //other
 如果用在赋值运算。可以使用`?=`进一步简化运算。
 
 ```groovy
-res=0;
-res?=2; //<=> res=res?:2 <=>res=res?res:2;
+res = 0;
+res ?= 2; //<=> res=res?:2 <=>res=res?res:2;
 println res
 ```
 
@@ -466,10 +464,11 @@ println res
 groovy提供了和js(es2015)一样的安全导航运算符。使用?.来判断元素是否存在。
 
 ```groovy
-class Obj{
+class Obj {
     String file;
 }
-Obj obj=null;
+
+Obj obj = null;
 print obj?.file
 ```
 
@@ -487,7 +486,7 @@ groovy中调用属性是优先采用getter来访问的。
 
 public class JUser {
     public String username;
-    public String password="123456";
+    public String password = "123456";
 
     public String getPassword() {
         System.out.println("我被访问了");
@@ -505,36 +504,34 @@ public class JUser {
 ```groovy
 def user = new JUser()
 def username = user.username
-assert user.password==user.@password
-assert user.password==user.@"password"
+assert user.password == user.@password
+assert user.password == user.@"password"
 ```
 
 在idea中，属性特别显示紫色。
 
 ![image-20240807024203279](assets/image-20240807024203279.png)
 
-
-
 ### 方法指针运算符
 
 我们可以将对象的方法存起来（`.&`）。我们会得到一个闭包函数（Closure）然后稍后调用他。相当于回调函数。
 
 ```groovy
-class People{
-    def sayHello(){
+class People {
+    def sayHello() {
         println "hello"
     }
-    static void sayHello2(){
+
+    static void sayHello2() {
         println "hello2"
     }
 }
-def method=new People().&sayHello
+
+def method = new People().&sayHello
 method()
-def method2=new People().&sayHello2
+def method2 = new People().&sayHello2
 method2()
 ```
-
-
 
 例如我们可以将一些库的方法，结构出来使用。比如这个计算器的add方法
 
@@ -544,6 +541,7 @@ class Calculator {
         a + b;
     }
 }
+
 Closure<Integer> add = Calculator.&add
 println add(1, 2)
 println add(2, 3)
@@ -565,8 +563,6 @@ assert array instanceof String[]
 
 使用方法引用简化了操作。
 
-
-
 ## 正则运算符
 
 脚本在字符串的匹配，搜索是家常便饭。所以groovy简化了正则的操作。简化了正则的三个阶段 Pattern Matcher find
@@ -578,8 +574,8 @@ assert array instanceof String[]
 ```groovy
 import java.util.regex.Pattern
 
-def pattern= ~/a/;
-assert pattern instanceof  Pattern
+def pattern = ~/a/;
+assert pattern instanceof Pattern
 ```
 
 ### Find 运算符
@@ -589,8 +585,8 @@ assert pattern instanceof  Pattern
 ```groovy
 import java.util.regex.Matcher
 
-def matcher= "aaa"=~/a/
-assert  matcher instanceof Matcher
+def matcher = "aaa" =~ /a/
+assert matcher instanceof Matcher
 ```
 
 groovy中matcher可以用来做判断条件的。
@@ -600,11 +596,11 @@ groovy中matcher可以用来做判断条件的。
 find方法每次find会获得下一次匹配的内容。group返回的是当前匹配的组。
 
 ```groovy
-def m= "ab" =~"(.)"
+def m = "ab" =~ "(.)"
 assert m;
-assert m.group(0)=="a"
+assert m.group(0) == "a"
 assert m
-assert m.group(0)=="b"
+assert m.group(0) == "b"
 ```
 
 #### Groovy中的Matcher
@@ -674,23 +670,19 @@ groovy对matcher进行了增强。
 这是一个二元运算符`==~`，使用 `输入=~正则字符串`来匹配字符串，产生一个Boolean对象。用于**单精度匹配**。
 
 ```groovy
-boolean  res= "a" ==~"a"//<=> "a".matches("a")
+boolean res = "a" ==~ "a"//<=> "a".matches("a")
 assert res;
-def str="abc";
-assert !(str==~"a")
-assert str==~"abc" 
-assert str==~/^abc$/
+def str = "abc";
+assert !(str ==~ "a")
+assert str ==~ "abc"
+assert str ==~ /^abc$/
 ```
-
-
 
 > [!TIP] Find运算符与Match 运算符的区别
 >
 > - Match 运算符用于单个精确匹配，属于全匹配。省略`^$`
 >
 > - Find运算符 用于查询多个结果用于模糊匹配。
-
-
 
 ## 其他运算符
 
@@ -709,9 +701,11 @@ import java.util.stream.Stream
 
 class User {
     String username;
+
     String getUsername() {
         return username
     }
+
     User(String username) {
         this.username = username
     }
@@ -719,10 +713,10 @@ class User {
 
 def users = [new User("XM"), new User("XH")] as User[]
 //java方法
-List<String> jUsernameList = Stream.of(users).map(u->u.username).toList() //这里方法引用会被警告,暂时不理解，就直接使用lambda吧
+List<String> jUsernameList = Stream.of(users).map(u -> u.username).toList() //这里方法引用会被警告,暂时不理解，就直接使用lambda吧
 //groovy方法
 def gUsernameList = users*.username;
-assert  jUsernameList==gUsernameList
+assert jUsernameList == gUsernameList
 ```
 
 可以使用数组封为最终结果。
@@ -734,7 +728,7 @@ def usernameArr = users*.username as String[];
 也可以直接使用list取。
 
 ```groovy
-def usernameList = [new User("XM"), new User("XH")] *.username;
+def usernameList = [new User("XM"), new User("XH")]*.username;
 ```
 
 #### 方法的扩展
@@ -744,26 +738,30 @@ def usernameList = [new User("XM"), new User("XH")] *.username;
 ```groovy
 import java.util.stream.Stream
 
-int add(int x,int y){
-    return x+y;
+int add(int x, int y) {
+    return x + y;
 }
-int add(int x,int y,int z){
-    return x+y+z;
+
+int add(int x, int y, int z) {
+    return x + y + z;
 }
-int add(Integer ...nums){
+
+int add(Integer... nums) {
     return Stream.of(nums).mapToInt(Integer::valueOf).sum()
 }
-void printScore(String name,int score){
+
+void printScore(String name, int score) {
     println "$name's socre is $score"
 }
-def tuple2=[1,2]
-def tuple3=[1,2,3]
-def tuple4=[1,2,3,4]
-assert add(*tuple2)==3 //int add(int x,int y)
-assert add(*tuple3)==6 //int add(int x,int y,int z)
-assert add(*tuple4)==10 //int add(Integer ...nums)
 
-def args=["xm",100]
+def tuple2 = [1, 2]
+def tuple3 = [1, 2, 3]
+def tuple4 = [1, 2, 3, 4]
+assert add(*tuple2) == 3 //int add(int x,int y)
+assert add(*tuple3) == 6 //int add(int x,int y,int z)
+assert add(*tuple4) == 10 //int add(Integer ...nums)
+
+def args = ["xm", 100]
 printScore(*args)
 ```
 
@@ -776,11 +774,11 @@ printScore(*args)
 *list在运算的右侧,想到与添加操作
 
 ```groovy
-def arr=[1]
-def arrCopy=[*arr]
-def arrAdd=[*arr,2,3]
-assert  arrCopy==arr
-assert  arrAdd==[1,2,3]
+def arr = [1]
+def arrCopy = [*arr]
+def arrAdd = [*arr, 2, 3]
+assert arrCopy == arr
+assert arrAdd == [1, 2, 3]
 ```
 
 #### Map的扩展
@@ -788,26 +786,27 @@ assert  arrAdd==[1,2,3]
 *map在运算的右侧，相对于将他的key都加入到新的map里面。
 
 ```groovy
-def uMap=[username:"xm"]
-def aMap=[age:19]
+def uMap = [username: "xm"]
+def aMap = [age: 19]
 
-def fullMap=[*:uMap,*:aMap]
-assert fullMap==[username:"xm",age:19]
+def fullMap = [*: uMap, *: aMap]
+assert fullMap == [username: "xm", age: 19]
 ```
 
 ### 范围运算符
 
-groovy中，定义了一种范围`start..end`，从start自增1到end的列表的**表示**。可以遍历或者和list比较。基类为`Range`.主要有IntRange，NumberRange两类。存在不等号时不包含边界。
+groovy中，定义了一种范围`start..end`，从start自增1到end的列表的**表示**。可以遍历或者和list比较。基类为`Range`
+.主要有IntRange，NumberRange两类。存在不等号时不包含边界。
 
 ```groovy
 assert 1..2 instanceof IntRange
 assert 1.1..2 instanceof NumberRange
 assert 0..<0 instanceof EmptyRange
-assert (1..2).toString()=='1..2'
-assert 1..4==[1,2,3,4]
-assert 1<..<4==[2,3]
-assert 1.1..4==[1.1,2.1,3.1]
-assert 1.1..<5.1==[1.1,2.1,3.1,4.1]
+assert (1..2).toString() == '1..2'
+assert 1..4 == [1, 2, 3, 4]
+assert 1<..<4 == [2, 3]
+assert 1.1..4 == [1.1, 2.1, 3.1]
+assert 1.1..<5.1 == [1.1, 2.1, 3.1, 4.1]
 ```
 
 范围可以反方向的。
@@ -823,13 +822,14 @@ assert 3<..1 == [2, 1]
 
 ```groovy
 assert 'a'..'c' instanceof ObjectRange
-assert 'a'..'c'==['a','b','c']
-assert 'xa'..'xc'==['xa','xb','xc']
+assert 'a'..'c' == ['a', 'b', 'c']
+assert 'xa'..'xc' == ['xa', 'xb', 'xc']
 ```
 
 #### 自定义对象范围
 
-如果我们想要自定义..运算,我们就要实现`Comparable<T>`和 `T next()` 和`T previous()`方法  。必要时实现toString方法,方便显示 。
+如果我们想要自定义..运算,我们就要实现`Comparable<T>`和 `T next()` 和`T previous()`方法
+。必要时实现toString方法,方便显示 。
 
 - 顺序实现next方法
 - 逆序实现previous方法
@@ -839,6 +839,7 @@ assert 'xa'..'xc'==['xa','xb','xc']
 ```groovy
 class Num implements Comparable<Num> {
     Number value;
+
     Num(Number value) {
         this.value = value
     }
@@ -870,10 +871,10 @@ println nums.value
 
 groovy可以使用`<=>`来比较两个数。返回 -1 0 1这三个值
 
-::: code-group 
+::: code-group
 
 ```groovy [groovy]
-class Num implements Comparable<Num>{
+class Num implements Comparable<Num> {
     Number num;
 
     Num(Number num) {
@@ -882,10 +883,11 @@ class Num implements Comparable<Num>{
 
     @Override
     int compareTo(Num o) {
-        return num-o.num
+        return num - o.num
     }
 }
-println 1 <=>2
+
+println 1 <=> 2
 println new Num(1) <=> new Num(9)
 println new Num(9) <=> new Num(1)
 ```
@@ -907,13 +909,15 @@ java中下标运算只能是数组，而groovy重写了下标运算符。可以�
 ::: code-group
 
 ```groovy [groovy]
-def list=[1,2,3]
+def list = [1, 2, 3]
 println list[0]
 ```
 
 ```java [java]
 List<Integer> integers = List.of(1, 2, 3);
-System.out.println(integers);
+System.out.
+
+println(integers);
 ```
 
 :::
@@ -923,8 +927,8 @@ System.out.println(integers);
 前面提到[安全导航运算符](#安全导航运算符)可以先判断变量是否存在然后再获取里面的内容。对于数组我们也同理。使用?[]访问成员，
 
 ```groovy
-def a=[1,2]
-List<String> b=null;
+def a = [1, 2]
+List<String> b = null;
 println a?[1]
 println a?[2]
 println b?[2]
@@ -937,9 +941,9 @@ println b?[2]
 ```groovy
 def list = [1, 2, 3]
 assert 1 in list //等价于下列语句
-assert  list.isCase(1) 
+assert list.isCase(1)
 assert 4 !in list //等价于下列语句
-assert  list.isNotCase(4)
+assert list.isNotCase(4)
 ```
 
 in操作符通常使用在switch语句。默认执行in语句。
@@ -952,18 +956,18 @@ switch (x) {
         println 1;
     }
     case [2, 3, 4] -> { //集合判断
-        println "in ${[2,3,4]}";
+        println "in ${[2, 3, 4]}";
     }
-    case Integer->{ //实例判断
+    case Integer -> { //实例判断
         println "is integer";
     }
-    default -> { 
+    default -> {
         println "not integer"
     }
 }
 ```
 
-::: details  isCase源码
+::: details isCase源码
 
 在DefaultGroovyMethods类下有下列方法
 
@@ -981,6 +985,7 @@ public static boolean isCase(Object caseValue, Object switchValue) {
     }
     return caseValue.equals(switchValue);
 }
+
 //实例判断
 public static boolean isCase(Class caseValue, Object switchValue) {
     if (switchValue instanceof Class) {
@@ -1006,6 +1011,7 @@ class PeopleList {
     PeopleList(List<String> list) {
         this.list = list
     }
+
     @Override
     boolean isCase(Object value) {
         return value in list;
@@ -1022,21 +1028,20 @@ assert "xl" !in people;
 前面讲到===用来判断全等，其实其内部原理是使用is方法来实现的。内部使用了等号判断是否相同内存实例
 
 ```groovy
-class People{
+class People {
     @Override
     boolean equals(Object obj) {
-        return  obj instanceof People;
+        return obj instanceof People;
     }
 }
-def p1=new People()
-def p2=new People()
 
-assert  p1==p2 //groovy中的equals
-assert  p1.is(p2) //等号
-assert Objects.equals(p1,p2) //类似等号比较然后执行equals
+def p1 = new People()
+def p2 = new People()
+
+assert p1 == p2 //groovy中的equals
+assert p1.is(p2) //等号
+assert Objects.equals(p1, p2) //类似等号比较然后执行equals
 ```
-
-
 
 ::: details is源码
 
@@ -1060,9 +1065,9 @@ public static boolean compareIdentical(Object left, Object right) {
 groovy我们经常用到`as`转换为某个值。他其实内部是执行了asType方法。groovy帮我们实现了很多常用的转型。
 
 ```groovy
-Integer i0= (Integer)'42' //报错，无法强转
-Integer i= "42" as Integer
-Integer[] is= [] as Integer[]
+Integer i0 = (Integer) '42' //报错，无法强转
+Integer i = "42" as Integer
+Integer[] is = [] as Integer[]
 ```
 
 #### 自定义转型
@@ -1077,30 +1082,31 @@ class MP3 {
     Object asType(Class clazz) {
         if (clazz == WAV) {
             def wav = new WAV()
-            wav.filename=filename;
+            wav.filename = filename;
             return wav;
         }
-        throw  new ClassCastException("MP3 无法转为 $clazz")
+        throw new ClassCastException("MP3 无法转为 $clazz")
     }
 }
 
 class WAV {
     String filename;
+
     Object asType(Class clazz) {
         if (clazz == MP3) {
             def mp3 = new MP3()
-            mp3.filename=filename;
+            mp3.filename = filename;
             return mp3
 
         }
-        throw   new ClassCastException("WAV 无法转为 $clazz")
+        throw new ClassCastException("WAV 无法转为 $clazz")
     }
 }
 
 def mp3 = new MP3()
-mp3.filename="aaa"
+mp3.filename = "aaa"
 def wav = mp3 as WAV
-assert wav.filename==mp3.filename
+assert wav.filename == mp3.filename
 ```
 
 ### 钻石操作符
@@ -1108,7 +1114,7 @@ assert wav.filename==mp3.filename
 也就是泛型
 
 ```groovy
-List<String> arr=new ArrayList<>()
+List<String> arr = new ArrayList<>()
 ```
 
 ### 方法调用运算符
@@ -1118,22 +1124,25 @@ List<String> arr=new ArrayList<>()
 ```groovy
 import java.util.stream.Stream
 
-class Add{
+class Add {
     //static可加可不加
-    static int call(int a, int b){
-        return a+b;
+    static int call(int a, int b) {
+        return a + b;
     }
-    static int call(int...nums){
+
+    static int call(int ... nums) {
         def integers = nums as Integer[] //不能直接传，groovy无法自动装箱，可能是bug
-        return Stream.of(integers).mapToInt(i->i).sum();
+        return Stream.of(integers).mapToInt(i -> i).sum();
     }
-    static int call(List<Integer> nums){
-        return nums.stream().mapToInt(i->i).sum();
+
+    static int call(List<Integer> nums) {
+        return nums.stream().mapToInt(i -> i).sum();
     }
 }
+
 def add = new Add()
 println add(1, 2)
-println add(1, 2,3)
+println add(1, 2, 3)
 def of = List.of(1, 2, 3)
 println add(of)
 //println Add(1, 2) //报错找不到方法
@@ -1141,30 +1150,30 @@ println add(of)
 
 ## 操作符优先级
 
-| 等级 | 操作人员                                                     | 姓名                                                         |
-| :--- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| 1    | `new`  `()`                                                  | 对象创建，显式括号                                           |
-|      | `()`  `{}`  `[]`                                             | 方法调用、闭包、下标运算                                     |
-|      | `.`  `.&`  `.@`                                              | 成员访问、方法闭包、字段/属性访问                            |
-|      | `?.`  `*`  `*.`  `*:`                                        | 安全解除引用、扩展、扩展点、扩展图                           |
-|      | `~`  `!`  `(type)`                                           | 按位取反/模式，非，类型转换                                  |
-|      | `[]`  `?[]`  `++`  `--`                                      | 列表/映射/数组（安全）索引，后增/减                          |
-| 2    | `**`                                                         | 求幂                                                         |
-| 3    | `+` `--`  `-`                                                | 预增加/减少，一元加法，一元减法                              |
-| 4    | `*`  `/`  `%`                                                | 乘、除、余数                                                 |
-| 5    | `+`  `-`                                                     | 加法、减法                                                   |
-| 6    | `<<`  `>>`  `>>>`  `..`  `..<`  `<..<`  `<..`                | 左/右（无符号）移位，包含/排除范围                           |
-| 7    | `<`  `<=`  `>`  `>=`  `in`  `!in`  `instanceof`  `!instanceof`  `as` | 小于/大于/或等于、在、不在、instanceof、非instanceof、类型强制 |
-| 8    | `==`  `!=`  `<=>`  `===`  `!==`                              | 等于、不等于、比较、相同、不相同                             |
-|      | `=~`  `==~`                                                  | 正则表达式查找，正则表达式匹配                               |
-| 9    | `&`                                                          | 二进制/按位与                                                |
-| 10   | `^`                                                          | 二进制/按位异或                                              |
-| 11   | `|`                                                          | 二进制/按位或                                                |
-| 12   | `&&`                                                         | 逻辑和                                                       |
-| 13   | `||`                                                         | 逻辑或                                                       |
-| 14   | `? :`                                                        | 三元条件                                                     |
-|      | `?:`                                                         | elvis 运算符                                                 |
-| 15   | `=`  `**=`  `*=`  `/=`  `%=`  `+=`  `-=`  `<<=`  `>>=`  `>>>=`  `&=`  `^=`  `|=`   `?=` | 赋值运算                                                     |
+| 等级 | 操作人员                                                                          | 姓名                                         |
+|:---|:------------------------------------------------------------------------------|:-------------------------------------------|
+| 1  | `new`  `()`                                                                   | 对象创建，显式括号                                  |
+|    | `()`  `{}`  `[]`                                                              | 方法调用、闭包、下标运算                               |
+|    | `.`  `.&`  `.@`                                                               | 成员访问、方法闭包、字段/属性访问                          |
+|    | `?.`  `*`  `*.`  `*:`                                                         | 安全解除引用、扩展、扩展点、扩展图                          |
+|    | `~`  `!`  `(type)`                                                            | 按位取反/模式，非，类型转换                             |
+|    | `[]`  `?[]`  `++`  `--`                                                       | 列表/映射/数组（安全）索引，后增/减                        |
+| 2  | `**`                                                                          | 求幂                                         |
+| 3  | `+` `--`  `-`                                                                 | 预增加/减少，一元加法，一元减法                           |
+| 4  | `*`  `/`  `%`                                                                 | 乘、除、余数                                     |
+| 5  | `+`  `-`                                                                      | 加法、减法                                      |
+| 6  | `<<`  `>>`  `>>>`  `..`  `..<`  `<..<`  `<..`                                 | 左/右（无符号）移位，包含/排除范围                         |
+| 7  | `<`  `<=`  `>`  `>=`  `in`  `!in`  `instanceof`  `!instanceof`  `as`          | 小于/大于/或等于、在、不在、instanceof、非instanceof、类型强制 |
+| 8  | `==`  `!=`  `<=>`  `===`  `!==`                                               | 等于、不等于、比较、相同、不相同                           |
+|    | `=~`  `==~`                                                                   | 正则表达式查找，正则表达式匹配                            |
+| 9  | `&`                                                                           | 二进制/按位与                                    |
+| 10 | `^`                                                                           | 二进制/按位异或                                   |
+| 11 | `                                                                             | `                                          | 二进制/按位或                                                |
+| 12 | `&&`                                                                          | 逻辑和                                        |
+| 13 | `                                                                             |                                            |`                                                         | 逻辑或                                                       |
+| 14 | `? :`                                                                         | 三元条件                                       |
+|    | `?:`                                                                          | elvis 运算符                                  |
+| 15 | `=`  `**=`  `*=`  `/=`  `%=`  `+=`  `-=`  `<<=`  `>>=`  `>>>=`  `&=`  `^=`  ` | =`   `?=`                                  | 赋值运算                                                     |
 
 ## 运算符重载
 
@@ -1172,19 +1181,19 @@ java不支持运算符重载，目的是减少意外的运算导致可阅读性�
 
 groovy有一个好处就是支持运算符重载，可以重载常用的操作符达到自定义我们数据结构的目的。
 
-| 运算符 | 方法          | 运算符     | 方法                    |
-| :----- | :------------ | :--------- | :---------------------- |
-| `+`    | a.plus(b)     | `a[b]`     | a.getAt(b)              |
-| `-`    | a.minus(b)    | `a[b] = c` | a.putAt(b, c)           |
-| `*`    | a.multiply(b) | `a in b`   | b.isCase(a)             |
-| `/`    | a.div(b)      | `<<`       | a.leftShift(b)          |
-| `%`    | a.mod(b)      | `>>`       | a.rightShift(b)         |
-| `**`   | a.power(b)    | `>>>`      | a.rightShiftUnsigned(b) |
-| `\|`    | a.or(b)       | `++`       | a.next()                |
-| `&`    | a.and(b)      | `--`       | a.previous()            |
-| `^`    | a.xor(b)      | `+a`       | a.positive()            |
-| `as`   | a.asType(b)   | `-a`       | a.negative()            |
-| `a()`  | a.call()      | `~a`       | a.bitwiseNegate()       |
+| 运算符   | 方法            | 运算符        | 方法                      |
+|:------|:--------------|:-----------|:------------------------|
+| `+`   | a.plus(b)     | `a[b]`     | a.getAt(b)              |
+| `-`   | a.minus(b)    | `a[b] = c` | a.putAt(b, c)           |
+| `*`   | a.multiply(b) | `a in b`   | b.isCase(a)             |
+| `/`   | a.div(b)      | `<<`       | a.leftShift(b)          |
+| `%`   | a.mod(b)      | `>>`       | a.rightShift(b)         |
+| `**`  | a.power(b)    | `>>>`      | a.rightShiftUnsigned(b) |
+| `\|`  | a.or(b)       | `++`       | a.next()                |
+| `&`   | a.and(b)      | `--`       | a.previous()            |
+| `^`   | a.xor(b)      | `+a`       | a.positive()            |
+| `as`  | a.asType(b)   | `-a`       | a.negative()            |
+| `a()` | a.call()      | `~a`       | a.bitwiseNegate()       |
 
 下列举例一个复数运算
 
@@ -1200,19 +1209,22 @@ class Complex {
         this.a = a
         this.b = b
     }
+
     String toString() {
-        return "${a?a.stripTrailingZeros():""}${a*b!=0&&b>0?"+":""}${b?b.stripTrailingZeros()+"i":""}"
+        return "${a ? a.stripTrailingZeros() : ""}${a * b != 0 && b > 0 ? "+" : ""}${b ? b.stripTrailingZeros() + "i" : ""}"
     }
+
     Complex plus(Complex other) {
-        def complex = new Complex(0.0g,0.0g)
+        def complex = new Complex(0.0g, 0.0g)
         complex.a = a + other.a
         complex.b = b + other.b
         return complex
     }
-    Complex multiply(Complex other){
-        def complex = new Complex(0.0g,0.0g)
-        complex.a = a * other.a -b*other.b
-        complex.b= a*other.b+b*other.a
+
+    Complex multiply(Complex other) {
+        def complex = new Complex(0.0g, 0.0g)
+        complex.a = a * other.a - b * other.b
+        complex.b = a * other.b + b * other.a
         return complex;
     }
 }
@@ -1220,7 +1232,7 @@ class Complex {
 def c1 = new Complex(1.0g, 1.0g)
 def c2 = new Complex(1.0g, 1.0g)
 def c3 = new Complex(1.0g, -1.0g)
-println c1+c2
-println c1*c2
-println c1*c3
+println c1 + c2
+println c1 * c2
+println c1 * c3
 ```
