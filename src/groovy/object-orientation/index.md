@@ -509,7 +509,101 @@ names(a: 1,b: 2,3,4)
 
 #### 默认参数
 
+和js一样，可以直接等号表示默认值
+
+```groovy
+def m(int a,int b=1){
+    println a+b
+}
+m(1)   //2
+m(1,2) //3
+```
+
 #### 可变参数
+
+groovy同样支持java风格的可变参数。
+
+```groovy
+def m(int ...a){
+    println a
+}
+
+m(1,2,3)
+```
+
+groovy中`单个数组`参数也可认为可变参数
+
+```groovy
+def m(int[] a){
+    println a
+}
+
+m(1,2,3)
+```
+
+
+
+#### 动态方法选择
+
+groovy中方法的选择和java不一样，groovy在运行时对方法进行链接调用，java则在编译时对方法进行链接调用。
+
+对于官网所给的例子
+
+::: code-group
+
+```java
+public class JMain {
+    public static void main(String[] args) {
+        System.out.println(method(1,"2")); // i/s
+        System.out.println(method("1",2)); // s/i
+        System.out.println(method("1","2")); // o/o
+        Object o1=1;
+        Object o2="2";
+        System.out.println(method(o1,o2)); // o/o
+    }
+
+   static String method(Object o1, Object o2) {
+        return "o/o";
+    }
+
+   static String method(Integer i, String s) {
+        return "i/s";
+    }
+
+   static String method(String s, Integer i) {
+        return "s/i";
+    }
+}
+```
+
+
+
+```groovy
+def method(Object o1, Object o2) { 'o/o' }
+def method(Integer i, String  s) { 'i/s' }
+def method(String  s, Integer i) { 's/i' }
+println(method(1,"2")); // i/s
+println(method("1",2)); // s/i
+println(method("1","2")); // o/o
+Object o1=1;
+Object o2="2";
+println(method(o1,o2)); // i/s
+```
+
+:::
+
+##### 动态方法选择优先级
+
+groovy方法选择是动态的，但是选择得看优先级，主要采用`最近优先`策略
+
+- **继承实现按就近原则，同级实现大于继承**
+
+  若继承类则
+
+- **对象数组优于对象**
+- **非可变参数变体优于可变参数**
+- **可变参数数量最少优先**
+- **原始类型使用相同或稍大类型**
 
 ### 字段
 
