@@ -19,13 +19,15 @@ export function resolve(route: Route) {
 
 
 function pathResolve(item: linkItem,path:string) {
+    let linkAddPath=false;
     if (item?.link){
         if (item.link.match("^[^/]")){
             item.link=path+"/"+item.link;
+            linkAddPath=true;
         }
     }
     if (item?.items?.length){
-        let cPath=join(item.link,path);
+        let cPath=join(item.link,linkAddPath?"":path);
         item.items.forEach(c=>pathResolve(c,cPath))
     }
 }
