@@ -1,9 +1,5 @@
 # 简介
 
-## 参考链接
-
-本文部分内容摘自和改编 Kubernetes 官方文档《Kubernetes 官方文档》（作者：The Kubernetes Authors），依据 [CC BY 4.0 协议](https://creativecommons.org/licenses/by/4.0/)进行分享与传播。  
-原文链接：https://kubernetes.io/zh-cn/docs/home
 
 ## Kubernetes是什么
 
@@ -40,4 +36,11 @@ Kubernetes 为你提供：
 - **密钥与配置管理**
 
   Kubernetes 允许你存储和管理敏感信息，例如密码、OAuth 令牌和 SSH 密钥。 无需在容器内存储？。
+
+
+
+## 参考文档
+
+本文部分内容摘自和改编 Kubernetes 官方文档《Kubernetes 官方文档》（作者：The Kubernetes Authors），依据 [CC BY 4.0 协议](https://creativecommons.org/licenses/by/4.0/)进行分享与传播。  
+原文链接：https://kubernetes.io/zh-cn/docs/home
 
